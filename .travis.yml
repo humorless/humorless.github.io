@@ -1,0 +1,33 @@
+# https://docs.travis-ci.com/user/deployment/pages/
+# https://docs.travis-ci.com/user/reference/xenial/
+# https://docs.travis-ci.com/user/languages/clojure/
+# https://docs.travis-ci.com/user/customizing-the-build/
+
+
+dist: xenial
+language: clojure
+
+# before_install
+# install - install any dependencies required
+#install:
+#    - lein xxx install # travis automatically install deps listed in project.clj
+
+before_script:
+    - lein clean
+
+# script - run the build script
+script:
+    - lein run
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  email: $GITHUB_EMAIL
+  name: $GITHUB_USERNAME
+  verbose: true
+  keep-history: true
+  local-dir: resources/public
+  target_branch: master  # branch contains blog content
+  on:
+    branch: code  # branch contains Lein generator code
