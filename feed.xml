@@ -3,130 +3,149 @@
 <channel>
 <atom:link href='https://humorless.github.io/' rel='self' type='application/rss+xml'/>
 <title>
-My Awesome Blog
+Full Stack Clojure (全棧閉包)
 </title>
 <link>
 https://humorless.github.io/
 </link>
 <description>
-This blog is awesome
+This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Thu, 28 Feb 2019 06:50:04 +0000
+Thu, 28 Feb 2019 08:35:27 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
 <item>
 <guid>
-https://humorless.github.io/posts-output/2016-01-07-docs
+https://humorless.github.io/posts-output/dependency-injection
 </guid>
 <link>
-https://humorless.github.io/posts-output/2016-01-07-docs
+https://humorless.github.io/posts-output/dependency-injection
 </link>
 <title>
-Quick Start Guide
+dependency injection with Clojure
 </title>
 <description>
-&lt;p&gt;This intro only documents a subset of Cryogen's features. For additional documentation please see the &lt;a href='http://cryogenweb.org'&gt;cryogen site&lt;/a&gt;.&lt;/p&gt;&lt;h2 id=&quot;features&quot;&gt;Features&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;Blog posts and pages with Markdown (default) or AsciiDoc&lt;/li&gt;&lt;li&gt;Tags&lt;/li&gt;&lt;li&gt;Table of contents generation&lt;/li&gt;&lt;li&gt;Plain HTML page templates&lt;/li&gt;&lt;li&gt;Code syntax highlighting&lt;/li&gt;&lt;li&gt;Disqus support&lt;/li&gt;&lt;li&gt;Sitemap generation&lt;/li&gt;&lt;li&gt;RSS feed generation&lt;/li&gt;&lt;li&gt;Sass/SCSS compilation&lt;/li&gt;&lt;li&gt;Klipse Integration&lt;/li&gt;&lt;/ul&gt;&lt;h2 id=&quot;prerequisites&quot;&gt;Prerequisites&lt;/h2&gt;&lt;p&gt;You will need &lt;a href='https://github.com/technomancy/leiningen'&gt;Leiningen&lt;/a&gt; 2.5.0 or above installed.&lt;/p&gt;&lt;h2 id=&quot;usage&quot;&gt;Usage&lt;/h2&gt;&lt;h3 id=&quot;creating&amp;#95;a&amp;#95;new&amp;#95;site&quot;&gt;Creating a New Site&lt;/h3&gt;&lt;p&gt;A new site can be created using the Cryogen template as follows:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;lein new cryogen my-blog
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;running&amp;#95;the&amp;#95;server&quot;&gt;Running the Server&lt;/h3&gt;&lt;p&gt;The web server can be started from the &lt;code&gt;my-blog&lt;/code&gt; directory using the &lt;code&gt;lein-ring&lt;/code&gt; plugin:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;lein ring server
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The server will watch for changes in the &lt;code&gt;resources/templates&lt;/code&gt; folder and recompile the content automatically.&lt;/p&gt;&lt;h3 id=&quot;site&amp;#95;configuration&quot;&gt;Site Configuration&lt;/h3&gt;&lt;p&gt;The site configuration file is found at &lt;code&gt;templates/config.edn&lt;/code&gt;, this file looks as follows:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;clojure&quot;&gt;{:site-title           &amp;quot;My Awesome Blog&amp;quot;
- :author               &amp;quot;Bob Bobbert&amp;quot;
- :description          &amp;quot;This blog is awesome&amp;quot;
- :site-url             &amp;quot;http://blogawesome.com/&amp;quot;
- :post-root            &amp;quot;posts&amp;quot;
- :page-root            &amp;quot;pages&amp;quot;
- :post-root-uri        &amp;quot;posts-output&amp;quot;
- :page-root-uri        &amp;quot;pages-output&amp;quot;
- :tag-root-uri         &amp;quot;tags-output&amp;quot;
- :author-root-uri      &amp;quot;authors-output&amp;quot;
- :blog-prefix          &amp;quot;/blog&amp;quot;
- :rss-name             &amp;quot;feed.xml&amp;quot;
- :rss-filters          &amp;#91;&amp;quot;cryogen&amp;quot;&amp;#93;
- :recent-posts         3
- :post-date-format     &amp;quot;yyyy-MM-dd&amp;quot;
- :archive-group-format &amp;quot;yyyy MMMM&amp;quot;
- :sass-src             &amp;#91;&amp;#93;
- :sass-path            &amp;quot;sass&amp;quot;
- :compass-path         &amp;quot;compass&amp;quot;
- :theme                &amp;quot;blue&amp;quot;
- :resources            &amp;#91;&amp;quot;img&amp;quot;&amp;#93;
- :keep-files           &amp;#91;&amp;quot;.git&amp;quot;&amp;#93;
- :disqus?              false
- :disqus-shortname     &amp;quot;&amp;quot;
- :ignored-files        &amp;#91;#&amp;quot;\.#.&amp;#42;&amp;quot; #&amp;quot;.&amp;#42;\.swp$&amp;quot;&amp;#93;
- :posts-per-page       5
- :blocks-per-preview   2
- :previews?            false
- :clean-urls?          true
- :hide-future-posts?   true
- :klipse               {}
- :debug?               false}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;For information about each key please see the &lt;a href='http://cryogenweb.org/docs/configuration.html'&gt;&quot;Configuration&quot;&lt;/a&gt; portion of the Cryogen documentation site.&lt;/p&gt;&lt;h3 id=&quot;switching&amp;#95;between&amp;#95;markdown&amp;#95;and&amp;#95;asciidoc&quot;&gt;Switching between Markdown and AsciiDoc&lt;/h3&gt;&lt;p&gt;Cryogen comes with Markdown support as default. If you want to use AsciiDoc instead, open the &lt;code&gt;project.clj&lt;/code&gt; in your created blog (e.g. &lt;code&gt;my-blog&lt;/code&gt;), and change the line in &lt;code&gt;:dependencies&lt;/code&gt; that says &lt;code&gt;cryogen-markdown&lt;/code&gt; to &lt;code&gt;cryogen-asciidoc&lt;/code&gt;. Instead of looking for files ending in &lt;code&gt;.md&lt;/code&gt; in the &lt;code&gt;resources/templates/md&lt;/code&gt; directory, the compiler will now look for files ending in &lt;code&gt;.asc&lt;/code&gt; in the &lt;code&gt;resources/templates/asc&lt;/code&gt; directory.&lt;/p&gt;&lt;h3 id=&quot;selecting&amp;#95;a&amp;#95;theme&quot;&gt;Selecting a Theme&lt;/h3&gt;&lt;p&gt;The Cryogen template comes with two themes in the &lt;code&gt;resources/templates/themes&lt;/code&gt; folder. To change your blog's theme, change the value of the &lt;code&gt;:theme&lt;/code&gt; key in &lt;code&gt;config.edn&lt;/code&gt;.&lt;/p&gt;&lt;h3 id=&quot;customizing&amp;#95;layouts&quot;&gt;Customizing Layouts&lt;/h3&gt;&lt;p&gt;Cryogen uses &lt;a href='https://github.com/yogthos/Selmer'&gt;Selmer&lt;/a&gt; templating engine for layouts. Please refer to its documentation to see the supported tags and filters for the layouts.&lt;/p&gt;&lt;p&gt;The layouts are contained in the &lt;code&gt;resources/templates/themes/{theme}/html&lt;/code&gt; folder of the project. By default, the &lt;code&gt;base.html&lt;/code&gt; layout is used to provide the general layout for the site. This is where you would add static resources such as CSS and JavaScript assets as well as define headers and footers for your site.&lt;/p&gt;&lt;p&gt;Each page layout should have a name that matches the &lt;code&gt;:layout&lt;/code&gt; key in the page metadata and end with &lt;code&gt;.html&lt;/code&gt;. Page layouts extend the base layout and should only contain the content relevant to the page inside the &lt;code&gt;content&lt;/code&gt; block. For example, the &lt;code&gt;tag&lt;/code&gt; layout is located in &lt;code&gt;tag.html&lt;/code&gt; and looks as follows:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;{% extends &amp;quot;templates/html/layouts/base.html&amp;quot; %}
-{% block content %}
-&amp;lt;div id=&amp;quot;posts-by-tag&amp;quot;&amp;gt;
-    &amp;lt;h2&amp;gt;Posts tagged {{name}}&amp;lt;/h2&amp;gt;
-    &amp;lt;ul&amp;gt;
-    {% for post in posts %}
-        &amp;lt;li&amp;gt;
-            &amp;lt;a href=&amp;quot;{{post.uri}}&amp;quot;&amp;gt;{{post.title}}&amp;lt;/a&amp;gt;
-        &amp;lt;/li&amp;gt;
-    {% endfor %}
-    &amp;lt;/ul&amp;gt;
-&amp;lt;/div&amp;gt;
-{% endblock %}
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;code&amp;#95;syntax&amp;#95;highlighting&quot;&gt;Code Syntax Highlighting&lt;/h3&gt;&lt;p&gt;Cryogen uses &lt;a href='https://highlightjs.org/'&gt;Highlight.js&lt;/a&gt; for code syntax highlighting. You can add more languages by replacing &lt;code&gt;templates/js/highlight.pack.js&lt;/code&gt; with a customized package from &lt;a href='https://highlightjs.org/download/'&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;The &lt;code&gt; initHighlightingOnLoad&lt;/code&gt; function is called in &lt;code&gt;{theme}/html/base.html&lt;/code&gt;.&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;xml&quot;&gt;&amp;lt;script&amp;gt;hljs.initHighlightingOnLoad&amp;#40;&amp;#41;;&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;deploying&amp;#95;your&amp;#95;site&quot;&gt;Deploying Your Site&lt;/h2&gt;&lt;p&gt;The generated static content will be found under the &lt;code&gt;resources/public&lt;/code&gt; folder. Simply copy the content to a static folder for a server such as Nginx or Apache and your site is now ready for service.&lt;/p&gt;&lt;p&gt;A sample Nginx configuration that's placed in &lt;code&gt;/etc/nginx/sites-available/default&lt;/code&gt; can be seen below:&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;javascript&quot;&gt;server {
-  listen 80 default&amp;#95;server;
-  listen &amp;#91;::&amp;#93;:80 default&amp;#95;server ipv6only=on;
-  server&amp;#95;name localhost &amp;lt;yoursite.com&amp;gt; &amp;lt;www.yoursite.com&amp;gt;;
+&lt;p&gt;寫 clojure 的時候，雖然套用了 REPL-driven development 的開發方式，已經相對可以讓大多數的函數很快地做過測試。但是，隨著要開發的專案愈來愈大，還是一樣需要用標準的寫法來寫單元測試 (unit test) 。有一個非正規的統計，如果是 Ruby on Rail 的專案，一般而言，90% 的函數都是有副作用的。然而， clojure 語言的專案，往往只有 40% 的函數帶有副作用。&lt;/p&gt;&lt;p&gt;即使是寫 clojure 語言，還是會遇到有 side effect 的函數，那比較好的寫法是怎麼樣呢？&lt;/p&gt;&lt;p&gt;&lt;!&amp;ndash;more&amp;ndash;&gt;&lt;/p&gt;&lt;p&gt;我查了一下 stackoverflow 之後，很快就找到了一個很好用的函數 &lt;code&gt;with-redefs&lt;/code&gt; 。 stackoverflow 上的答案大意如下： 由於 clojure 語言有 Dynamic binding 的特性，使用 &lt;code&gt;with-redefs&lt;/code&gt; 就可以實現同樣的語意了。&lt;/p&gt;&lt;p&gt;我試了一下，還真的管用，範例如下：&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;clojure&quot;&gt;&amp;#40;deftest platform-contact-test
+  &amp;#40;testing &amp;quot;platform-contact&amp;quot;
+    ; use the DI technique to test the function platform-contact
+    &amp;#40;is &amp;#40;= 170
+           &amp;#40;with-redefs &amp;#91;get-platform-contact &amp;#40;fn &amp;#91;&amp;#95;&amp;#93; &amp;#40;slurp &amp;quot;./resources/contact&amp;#95;data.txt&amp;quot;&amp;#41;&amp;#41;&amp;#93;
+             &amp;#40;count &amp;#40;platform-contact &amp;#40;temp-platform-all&amp;#41;&amp;#41;&amp;#41;&amp;#41;&amp;#41;&amp;#41;&amp;#41;&amp;#41;
 
-  access&amp;#95;log  /var/log/blog&amp;#95;access.log;
-  error&amp;#95;log   /var/log/blog&amp;#95;error.log;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;在這個範例中，原本的 &lt;code&gt;get-platform-contact&lt;/code&gt; 函數是一個有副作用的函數，它會被 &lt;code&gt;platform-contact&lt;/code&gt; 函數呼叫。 &lt;code&gt;get-platform-contact&lt;/code&gt; 函數會發出一個 http request ，並且傳回遠端 server 上的資料，所以如果沒有加以代換，單元測試就會非常慢。用了 &lt;code&gt;with-redefs&lt;/code&gt; 之後，就可以輕易地將 &lt;code&gt;get-platform-contact&lt;/code&gt; 代換成一個會傳回固定檔案資料的函數，如此就可以執行快速的單元測試了。&lt;/p&gt;&lt;p&gt;對於 clojure 這種先進的特性， stackoverflow 上有一句評論： Needing a framework for DI is really just compensating for a lack of sufficient features in the language itself.&lt;/p&gt;
+</description>
+<pubDate>
+Wed, 12 Jul 2017 00:00:00 +0000
+</pubDate>
+</item>
+<item>
+<guid>
+https://humorless.github.io/posts-output/groupby
+</guid>
+<link>
+https://humorless.github.io/posts-output/groupby
+</link>
+<title>
+groupby
+</title>
+<description>
+&lt;p&gt;一開始是我在寫 &lt;a href='http://www.4clojure.com/problem/63'&gt;4clojure&lt;/a&gt; 的練習題的時候，寫到了一個題目，要重新實現 clojure 語言的 groupby 函數。我糾結了好一陣子，又查了不少資料，才勉強用 reduce 寫出來。然而，最近卻在工作中，用上了 groupby 。&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;clojure&quot;&gt;&amp;#40;fn f &amp;#91;k coll&amp;#93;
+  &amp;#40;reduce
+    &amp;#40;fn &amp;#91;c v&amp;#93;
+      &amp;#40;update-in c &amp;#91;&amp;#40;k v&amp;#41;&amp;#93; &amp;#40;fnil conj &amp;#91;&amp;#93;&amp;#41; v&amp;#41;&amp;#41;
+    {} coll&amp;#41;&amp;#41;
 
-  location / {
-    alias       /var/blog/;
-    error&amp;#95;page  404 = /404.html;
-  }
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;&lt;!&amp;ndash;more&amp;ndash;&gt; 工作上遇到的問題是要重構同事寫的程式碼。程式碼做的事情是：「接受資料庫 dump 的 json 輸出，跑兩層很複雜的迴圈，對原始的資料做主鍵交換的處理，然後將資料存入 mysql 資料庫。」資料庫 dump 出來的 json 大概長成如下的樣子：&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;json&quot;&gt;  &amp;quot;result&amp;quot;: &amp;#91;
+    {
+      &amp;quot;platform&amp;quot;: &amp;quot;c01.i01&amp;quot;,
+      &amp;quot;ip&amp;#95;list&amp;quot;: &amp;#91;
+        {
+          &amp;quot;ip&amp;quot;: &amp;quot;192.168.0.1&amp;quot;,
+          &amp;quot;hostname&amp;quot;: &amp;quot;ggyy6699&amp;quot;
+        },
+        {
+          &amp;quot;ip&amp;quot;: &amp;quot;192.169.1.1&amp;quot;,
+          &amp;quot;hostname:&amp;quot;: &amp;quot;ggyy7700&amp;quot;
+        }
+      &amp;#93;
+    },
+    {
+      &amp;quot;platform&amp;quot;: &amp;quot;c01.i05&amp;quot;,
+      &amp;quot;ip&amp;#95;list&amp;quot;: &amp;#91;
+        {
+          &amp;quot;ip&amp;quot;: &amp;quot;192.168.0.2&amp;quot;,
+          &amp;quot;hostname&amp;quot;: &amp;quot;ggkk8899&amp;quot;
+        },
+        {
+          &amp;quot;ip&amp;quot;: &amp;quot;192.169.1.2&amp;quot;,
+          &amp;quot;hostname:&amp;quot;: &amp;quot;ggkk9900&amp;quot;
+        }
+      &amp;#93;
+    }
+  &amp;#93;
 }
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Simply set &lt;code&gt;yoursite.com&lt;/code&gt; to the domain of your site in the above configuration and ensure the static content is available at &lt;code&gt;/var/blog/&lt;/code&gt;. Finally, place your custom error page in the &lt;code&gt;/var/blog/404.html&lt;/code&gt; file.&lt;/p&gt;&lt;p&gt;More information on deployment can be found &lt;a href='http://cryogenweb.org/docs/deploying-to-github-pages.html'&gt;here&lt;/a&gt;.&lt;/p&gt;&lt;h2 id=&quot;some&amp;#95;sites&amp;#95;made&amp;#95;with&amp;#95;cryogen&quot;&gt;Some Sites Made With Cryogen&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;&lt;a href='http://carmenla.me/blog/archives'&gt;My personal blog&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://cryogenweb.org'&gt;Cryogen Documentation Site&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://yogthos.net/'&gt;Yogthos' blog&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://www.agynamix.de'&gt;AGYNAMIX Site &amp; Blog&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://www.chadstovern.com'&gt;Chad Stovern's blog&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://lambdax.io/blog/'&gt;LambdaX&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://www.szcz.org/'&gt;szcz&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='https://blog.isvit.info'&gt;ISvit blog&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='http://lambdafunk.com'&gt;Lambda Funk&lt;/a&gt;&lt;/li&gt;&lt;li&gt;&lt;a href='https://ddft.wiki'&gt;DDFT.wiki&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;從這個 json 來看的話，&lt;code&gt;platform&lt;/code&gt; 是主鍵 (primary key) 。而每一個 &lt;code&gt;platform&lt;/code&gt; 下之下會有多個 &lt;code&gt;hostname&lt;/code&gt; 。而程式碼做的事情是，先解析這個 json ，重新整理之後，讓 &lt;code&gt;hostname&lt;/code&gt; 變成主鍵 (primary key) ，並且做成一行又一行的 row ，最後要存入關聯式資料庫。讓我感到困擾的地方是因為整理屬性與屬性之間複雜關系的程式碼，都塞在雙重迴圈裡頭，所以雙重迴圈就變得很複雜，而且這一段雙重迴圈的程式碼也無法複用，難以修改、難以維護。&lt;/p&gt;&lt;p&gt;轉換成用資料庫的觀點來看待這個問題之後，就得到了還不錯的解法：&lt;/p&gt;&lt;ul&gt;&lt;li&gt;資料庫的 dump 輸出，本質上也是 join 兩張資料表的結果輸出，所以主鍵 (primary key) 本來就有可能交換。&lt;/li&gt;&lt;li&gt;既然要解析的資料是 join 之後的結果，所以有效的處理方式是這樣子：&lt;ol&gt;&lt;li&gt;先將 json 的資料跑完簡單的雙重迴圈，雙重迴圈只做一件事，只將將資料做展開 (unfolding)，變成 join 完成的樣子。&lt;/li&gt;&lt;li&gt;python 的 &lt;code&gt;itertools.groupby&lt;/code&gt; ，可以讓資料表 (table) 重新整理，產生出以任意的 column 做為主鍵 (primary key) 的新資料表 (table)。&lt;/li&gt;&lt;/ol&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;程式碼如下：&lt;pre&gt;&lt;code class=&quot;python&quot;&gt;def get&amp;#95;h&amp;#95;platforms&amp;#40;res&amp;#41;:
+    &amp;quot;&amp;quot;&amp;quot; sample output
+    ctl-zj-061-130-028-019 &amp;#91;'c01.p02', 'c01.p02-kugou'&amp;#93;
+    ctl-zj-061-130-028-020 &amp;#91;'c01.p02', 'c01.p02-kugou'&amp;#93;
+    ctl-zj-061-130-028-022 &amp;#91;'c01.p02', 'c01.p02-kugou'&amp;#93;
+    &amp;quot;&amp;quot;&amp;quot;
+    product = &amp;#91;&amp;#40;p&amp;#91;&amp;quot;platform&amp;quot;&amp;#93;, device&amp;#91;&amp;quot;hostname&amp;quot;&amp;#93;&amp;#41;
+               for p in res&amp;#91;&amp;quot;result&amp;quot;&amp;#93; for device in p&amp;#91;&amp;quot;ip&amp;#95;list&amp;quot;&amp;#93;&amp;#93;
+    data = sorted&amp;#40;product, key=lambda x: x&amp;#91;1&amp;#93;&amp;#41;
+    for key, grp in itertools.groupby&amp;#40;data, key=lambda x: x&amp;#91;1&amp;#93;&amp;#41;:
+        print&amp;#40;key, list&amp;#40;map&amp;#40;lambda x: x&amp;#91;0&amp;#93;, set&amp;#40;grp&amp;#41;&amp;#41;&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;
 </description>
 <pubDate>
-Thu, 07 Jan 2016 00:00:00 +0000
+Sun, 21 May 2017 00:00:00 +0000
 </pubDate>
 </item>
 <item>
 <guid>
-https://humorless.github.io/posts-output/2014-11-04-second-post
+https://humorless.github.io/posts-output/pattern
 </guid>
 <link>
-https://humorless.github.io/posts-output/2014-11-04-second-post
+https://humorless.github.io/posts-output/pattern
 </link>
 <title>
-Yet Another Post
+pattern
 </title>
 <description>
-&lt;h3 id=&quot;this&amp;#95;post&amp;#95;so&amp;#95;fetch&quot;&gt;This Post So Fetch&lt;/h3&gt;&lt;p&gt;some more stuff happened&lt;/p&gt;
+&lt;h2 id=&quot;patterns&amp;#95;=&amp;#95;programming&amp;#95;with&amp;#95;abstactions&amp;#95;that&amp;#95;are&amp;#95;not&amp;#95;powerful&amp;#95;enough&quot;&gt;patterns = programming with abstactions that are not powerful enough&lt;/h2&gt;&lt;p&gt;先來引述一下 Paul Graham 的句子&lt;blockquote&gt;&lt;p&gt; When I see patterns in my programs, I consider it a sign of trouble. The shape of a program should reflect only the problem it needs to solve. Any other regularity in the code is a sign, to me at least, that I'm using abstractions that aren't powerful enough. &lt;/p&gt;&lt;footer&gt; Paul Graham - Revenge of the Nerds&lt;/footer&gt; &lt;/blockquote&gt;為了想出可以妥善解釋這段話的意思的 non-trivial 範例，其實我還想了滿久的。不料真的就在我學習 clojure 語言的過程之中找到了。這個範例是對某個 array 的每一個元素，做相同的運算處理：一個是循序處理、一個是平行處理。&lt;/p&gt;&lt;p&gt;&lt;!&amp;ndash;more&amp;ndash;&gt;&lt;/p&gt;&lt;h3 id=&quot;golang&amp;#95;的兩個版本&quot;&gt;golang 的兩個版本&lt;/h3&gt;&lt;p&gt;循序處理的版本&lt;pre&gt;&lt;code class=&quot;golang&quot;&gt;res := make&amp;#40;&amp;#91;&amp;#93;float, N&amp;#41;;
+for i,xi := range data {
+    func &amp;#40;i int, xi float&amp;#41; {
+        res&amp;#91;i&amp;#93; = doSomething&amp;#40;i,xi&amp;#41;;
+    } &amp;#40;i, xi&amp;#41;;
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;&lt;p&gt;平行處理的版本&lt;pre&gt;&lt;code class=&quot;golang&quot;&gt;type empty {}
+...
+data := make&amp;#40;&amp;#91;&amp;#93;float, N&amp;#41;;
+res := make&amp;#40;&amp;#91;&amp;#93;float, N&amp;#41;;
+sem := make&amp;#40;chan empty, N&amp;#41;;  // semaphore pattern
+...
+for i,xi := range data {
+    go func &amp;#40;i int, xi float&amp;#41; {
+        res&amp;#91;i&amp;#93; = doSomething&amp;#40;i,xi&amp;#41;;
+        sem &amp;lt;- empty{};
+    } &amp;#40;i, xi&amp;#41;;
+}
+// wait for goroutines to finish
+for i := 0; i &amp;lt; N; ++i { &amp;lt;-sem }
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;&lt;h3 id=&quot;clojure&amp;#95;的兩個版本&quot;&gt;clojure 的兩個版本&lt;/h3&gt;&lt;p&gt;循序處理的版本&lt;pre&gt;&lt;code class=&quot;clj&quot;&gt;&amp;#40;defn myfun &amp;#91;coll&amp;#93;
+  &amp;#40;map doSomething coll&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;/p&gt;&lt;p&gt;平行處理的版本&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;clj&quot;&gt;&amp;#40;defn myfun &amp;#91;coll&amp;#93;
+  &amp;#40;pmap doSomething coll&amp;#41;&amp;#41;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;抽象層次的差異&quot;&gt;抽象層次的差異&lt;/h3&gt;&lt;p&gt;比較這兩種語言寫的四段程式碼，很快可以發現，循序處理的範例都相當的簡單。然而，當換成平行處理的版本時， golang 的實作比 clojure 難多了。需要用 golang 的 channel 做出一個 semaphore 的 pattern 才能實現。而相較之下， clojure 把 map 換成 pmap 就可以了。由此可見， clojure 在這個例子之中，是一種足夠強的抽象層，可以輕易地去表達這個平行處理的語意。&lt;/p&gt;
 </description>
 <pubDate>
-Tue, 04 Nov 2014 00:00:00 +0000
-</pubDate>
-</item>
-<item>
-<guid>
-https://humorless.github.io/posts-output/2014-03-10-first-post
-</guid>
-<link>
-https://humorless.github.io/posts-output/2014-03-10-first-post
-</link>
-<title>
-A Post
-</title>
-<description>
-&lt;h3 id=&quot;this&amp;#95;post&amp;#95;not&amp;#95;fetch&amp;#95;enough&quot;&gt;This Post Not Fetch Enough&lt;/h3&gt;&lt;p&gt;some stuff happened&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt; Stop trying to make fetch happen. &lt;/p&gt;&lt;footer&gt; Regina&lt;/footer&gt;&lt;/blockquote&gt;
-</description>
-<pubDate>
-Mon, 10 Mar 2014 00:00:00 +0000
+Tue, 28 Feb 2017 00:00:00 +0000
 </pubDate>
 </item>
 </channel>
