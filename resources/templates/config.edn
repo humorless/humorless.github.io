@@ -1,6 +1,6 @@
-{:site-title           "My Awesome Blog"
+{:site-title           "Full Stack Clojure (全棧閉包)"
  :author               "Laurence Chen"
- :description          "This blog is awesome"
+ :description          "This personal blog describes about the ideas around Clojure/ClojureScript/Datomic"
  :site-url             "https://humorless.github.io/"
  :post-root            "posts"
  :page-root            "pages"
