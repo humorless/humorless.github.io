@@ -9,5 +9,5 @@
 ### Contact
 
 * [Github](https://github.com/humorless)
-* [Twitter](https://twitter.com/humorlss)
-* [LinkedIn](https://linkedin.com/humorlss)
+* [Twitter](https://twitter.com/humorless)
+* [LinkedIn](https://linkedin.com/in/humorless)
