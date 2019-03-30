@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Full Stack Clojure (全棧閉包): About</title>
-    <link rel="canonical" href="https://humorless.github.io/pages-output/about">
+    <title>Full Stack Clojure (全棧閉包): REPL tips</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/REPL">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -33,7 +33,7 @@
                 ><a href="/archives">Archives</a></li>
                 
                 <li
-                 class="active" >
+                >
                 <a href="/pages-output/about">About</a>
                 </li>
                 
@@ -51,18 +51,54 @@
         <div class="col-lg-9">
             <div id="content">
                 
-<div id="custom-page">
-    <div id="page-header">
-        <h2>About</h2>
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">March 30, 2019</div>
+        
     </div>
+    <h2>REPL tips</h2>
+</div>
+<div>
     
-    <p>這個 blog 主要用來記錄個人研究 Clojure 相關技術的心得，包含但不限於 <code>Clojure</code>/<code>ClojureScript</code>/<code>Datomic</code></p><h3 id="contact">Contact</h3><ul><li><a href='https://github.com/humorless'>Github</a></li><li><a href='https://twitter.com/humorless'>Twitter</a></li><li><a href='https://linkedin.com/in/humorless'>LinkedIn</a></li></ul>
+    <p>從今年 2 月開始，接了一個公司內部應用軟體的專案開發，我用 clojure + luminus + datomic 來實作。不知不覺也就每天寫 clojure 的 REPL 近兩個月了。每天玩 REPL 之後，很快就發現一些過去我用 REPL 的盲點。</p><h3 id="沒有善用&#95;<code>clojure.repl/pprint</code>">沒有善用 <code>clojure.repl/pprint</code></h3><p>  沒有善用的主要原因，自然是因為在 <code>fireplace.vim</code> 的環境下，一開始我沒有特別做一些設定時，直接做 cpp, cqp 之類 REPL 操作，並不會有 pretty print 的輸出。後來，我總算是下定決心，把 <a href='https://github.com/humorless/dotfiles/blob/master/profiles.clj'>leiningen profiles</a> 設定好，加入了一個叫 <code>vinyasa</code> 的 leiningen dependency</p><p>  設定好之後，就可以用 <code>&#40;&gt;pprint ...&#41;</code> 來做 pretty print 。</p><h3 id="沒有善用&#95;<code>&#42;1</code>&#95;<code>&#42;2</code>">沒有善用 <code>&#42;1</code> <code>&#42;2</code></h3><p>  過去，我在做 REPL 操作時，常常做的事情是這樣子：</p><p>  <code>&#40;f1 a b c&#41;</code> => 試到結果正確</p><p>  <code>&#40;f2 &#40;f1 a b c&#41; d&#41;</code> => 也是試到結果也正確</p><p>  <code>&#40;f3 &#40;f2 &#40;f1 a b c&#41; d&#41; e&#41;</code> => 然後指令就愈來愈長, 愈來愈難下</p><p>  其實不用這樣子麻煩，第二次可以這樣子下指令 <code>&#40;f2 &#42;1 d&#41;</code> 。</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
+    
+    <a href="/tags-output/tips">tips</a>
+    
+    <a href="/tags-output/clojure">clojure</a>
+    
+    <a href="/tags-output/repl">repl</a>
+    
+</div>
+
 
     <div id="prev-next">
         
         
+        <a class="right" href="/posts-output/dependency-injection">dependency injection with Clojure &raquo;</a>
         
     </div>
+
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://humorless.github.io/posts-output/REPL";
+            this.page.identifier = "REPL tips";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//humorless.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    
+
+
 </div>
 
             </div>

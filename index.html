@@ -54,45 +54,38 @@
 <div id="post">
     <div class="post-header">
     <div id="post-meta" class="row">
-        <div class="col-lg-6">July 12, 2017</div>
+        <div class="col-lg-6">March 30, 2019</div>
         
     </div>
-    <h2>dependency injection with Clojure</h2>
+    <h2>REPL tips</h2>
 </div>
 <div>
     
-    <p>寫 clojure 的時候，雖然套用了 REPL-driven development 的開發方式，已經相對可以讓大多數的函數很快地做過測試。但是，隨著要開發的專案愈來愈大，還是一樣需要用標準的寫法來寫單元測試 (unit test) 。有一個非正規的統計，如果是 Ruby on Rail 的專案，一般而言，90% 的函數都是有副作用的。然而， clojure 語言的專案，往往只有 40% 的函數帶有副作用。</p><p>即使是寫 clojure 語言，還是會遇到有 side effect 的函數，那比較好的寫法是怎麼樣呢？</p><p><!&ndash;more&ndash;></p><p>我查了一下 stackoverflow 之後，很快就找到了一個很好用的函數 <code>with-redefs</code> 。 stackoverflow 上的答案大意如下： 由於 clojure 語言有 Dynamic binding 的特性，使用 <code>with-redefs</code> 就可以實現同樣的語意了。</p><p>我試了一下，還真的管用，範例如下：</p><pre><code class="clojure">&#40;deftest platform-contact-test
-  &#40;testing &quot;platform-contact&quot;
-    ; use the DI technique to test the function platform-contact
-    &#40;is &#40;= 170
-           &#40;with-redefs &#91;get-platform-contact &#40;fn &#91;&#95;&#93; &#40;slurp &quot;./resources/contact&#95;data.txt&quot;&#41;&#41;&#93;
-             &#40;count &#40;platform-contact &#40;temp-platform-all&#41;&#41;&#41;&#41;&#41;&#41;&#41;&#41;
-
-</code></pre><p>在這個範例中，原本的 <code>get-platform-contact</code> 函數是一個有副作用的函數，它會被 <code>platform-contact</code> 函數呼叫。 <code>get-platform-contact</code> 函數會發出一個 http request ，並且傳回遠端 server 上的資料，所以如果沒有加以代換，單元測試就會非常慢。用了 <code>with-redefs</code> 之後，就可以輕易地將 <code>get-platform-contact</code> 代換成一個會傳回固定檔案資料的函數，如此就可以執行快速的單元測試了。</p><p>對於 clojure 這種先進的特性， stackoverflow 上有一句評論： Needing a framework for DI is really just compensating for a lack of sufficient features in the language itself.</p>
+    <p>從今年 2 月開始，接了一個公司內部應用軟體的專案開發，我用 clojure + luminus + datomic 來實作。不知不覺也就每天寫 clojure 的 REPL 近兩個月了。每天玩 REPL 之後，很快就發現一些過去我用 REPL 的盲點。</p><h3 id="沒有善用&#95;<code>clojure.repl/pprint</code>">沒有善用 <code>clojure.repl/pprint</code></h3><p>  沒有善用的主要原因，自然是因為在 <code>fireplace.vim</code> 的環境下，一開始我沒有特別做一些設定時，直接做 cpp, cqp 之類 REPL 操作，並不會有 pretty print 的輸出。後來，我總算是下定決心，把 <a href='https://github.com/humorless/dotfiles/blob/master/profiles.clj'>leiningen profiles</a> 設定好，加入了一個叫 <code>vinyasa</code> 的 leiningen dependency</p><p>  設定好之後，就可以用 <code>&#40;&gt;pprint ...&#41;</code> 來做 pretty print 。</p><h3 id="沒有善用&#95;<code>&#42;1</code>&#95;<code>&#42;2</code>">沒有善用 <code>&#42;1</code> <code>&#42;2</code></h3><p>  過去，我在做 REPL 操作時，常常做的事情是這樣子：</p><p>  <code>&#40;f1 a b c&#41;</code> => 試到結果正確</p><p>  <code>&#40;f2 &#40;f1 a b c&#41; d&#41;</code> => 也是試到結果也正確</p><p>  <code>&#40;f3 &#40;f2 &#40;f1 a b c&#41; d&#41; e&#41;</code> => 然後指令就愈來愈長, 愈來愈難下</p><p>  其實不用這樣子麻煩，第二次可以這樣子下指令 <code>&#40;f2 &#42;1 d&#41;</code> 。</p>
 </div>
 
 <div id="post-tags">
     <b>Tags: </b>
     
+    <a href="/tags-output/tips">tips</a>
+    
     <a href="/tags-output/clojure">clojure</a>
     
-    <a href="/tags-output/unit test">unit test</a>
-    
-    <a href="/tags-output/dependency-injection">dependency-injection</a>
+    <a href="/tags-output/repl">repl</a>
     
 </div>
 
 
     
     <div id="comments">
-        <a href="/posts-output/dependency-injection#disqus_thread">View Comments</a>
+        <a href="/posts-output/REPL#disqus_thread">View Comments</a>
     </div>
     
 
     <div id="prev-next">
         
         
-        <a class="right" href="/posts-output/groupby">groupby &raquo;</a>
+        <a class="right" href="/posts-output/dependency-injection">dependency injection with Clojure &raquo;</a>
         
     </div>
 </div>
@@ -113,6 +106,8 @@
                     <h3>Recent Posts</h3>
                     <ul>
                         
+                        <li><a href="/posts-output/REPL">REPL tips</a></li>
+                        
                         <li><a href="/posts-output/dependency-injection">dependency injection with Clojure</a></li>
                         
                         <li><a href="/posts-output/groupby">groupby</a></li>
@@ -127,7 +122,11 @@
                     <h3>Tags</h3>
                     <ul>
                         
+                        <li><a href="/tags-output/tips">tips</a></li>
+                        
                         <li><a href="/tags-output/clojure">clojure</a></li>
+                        
+                        <li><a href="/tags-output/repl">repl</a></li>
                         
                         <li><a href="/tags-output/unit test">unit test</a></li>
                         
