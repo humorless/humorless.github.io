@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Full Stack Clojure (全棧閉包): Tags</title>
-    <link rel="canonical" href="https://humorless.github.io/tags">
+    <title>Full Stack Clojure (全棧閉包): Clojure development environment by Vagrant</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/vagrant">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -51,44 +51,64 @@
         <div class="col-lg-9">
             <div id="content">
                 
-<div id="tags-page">
-    <div id="page-header">
-        <h2>Tags</h2>
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">May 13, 2019</div>
+        
+    </div>
+    <h2>Clojure development environment by Vagrant</h2>
+</div>
+<div>
+    
+    <h2 id="tl;dr">TL;DR</h2><p>If you want to have a portable Clojure development environment and you use Vagrant, vim-fireplace, you may consider to try my <a href='https://github.com/humorless/dotfiles'>Vagrantfile</a>. </p><pre><code>git clone https://github.com/humorless/dotfiles
+cd dotfiles
+vagrant up
+</code></pre><h2 id="certain&#95;part&#95;of&#95;vagrantfile&#95;you&#95;may&#95;need&#95;to&#95;remove.">Certain part of vagrantfile you may need to remove.</h2><pre><code class="ruby">if Vagrant.has&#95;plugin?&#40;&quot;vagrant-timezone&quot;&#41;
+  config.timezone.value = &quot;Asia/Taipei&quot;
+end
+</code></pre><h2 id="the&#95;beginning&#95;of&#95;this&#95;repo">The beginning of this repo</h2><p>Several years before, I created a github repo called <code>dotfiles</code>, which is used to record my vimrc file. Later, every time when I changed my job, I modified my favorite vim plugin. I modified my vim plugin collection so many times. Sometimes, I installed certain vim cool plugin, but after a while, I totally forgot how to use it. There are not too many vim plugins in this dotfiles, because I am not a vim <code>l33t hax0r</code>.</p><h2 id="development&#95;and&#95;deployment">development and deployment</h2><p>I have had a job that I needed to work at AWS cloud9 environment. Some of my jobs required me to install totally new development environment. Recently, I needed to deploy Clojure enviroment on production system, so I learned a little <code>ansible</code> and I used ansible to install java8.</p><p>One day, I found that vagrant can use ansible to do provisioning, so I combined them together.</p><h2 id="some&#95;nice&#95;tools&#95;i&#95;cannot&#95;live&#95;without">Some nice tools I cannot live without</h2><p><code>nvm</code> is important to me because I usually need to change node version. <code>autojump</code> is also important. </p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
+    
+    <a href="/tags-output/ansible">ansible</a>
+    
+    <a href="/tags-output/Clojure">Clojure</a>
+    
+    <a href="/tags-output/vim-fireplace">vim-fireplace</a>
+    
+    <a href="/tags-output/vagrant">vagrant</a>
+    
+    <a href="/tags-output/DevOps">DevOps</a>
+    
+</div>
+
+
+    <div id="prev-next">
+        
+        
+        <a class="right" href="/posts-output/datomic">Using Datomic in my app &raquo;</a>
+        
     </div>
 
-    <ul>
-        
-        <li><a href="/tags-output/tips">tips</a></li>
-        
-        <li><a href="/tags-output/clojure">clojure</a></li>
-        
-        <li><a href="/tags-output/experience">experience</a></li>
-        
-        <li><a href="/tags-output/ansible">ansible</a></li>
-        
-        <li><a href="/tags-output/groupby">groupby</a></li>
-        
-        <li><a href="/tags-output/unit test">unit test</a></li>
-        
-        <li><a href="/tags-output/database">database</a></li>
-        
-        <li><a href="/tags-output/Clojure">Clojure</a></li>
-        
-        <li><a href="/tags-output/repl">repl</a></li>
-        
-        <li><a href="/tags-output/dependency-injection">dependency-injection</a></li>
-        
-        <li><a href="/tags-output/vim-fireplace">vim-fireplace</a></li>
-        
-        <li><a href="/tags-output/vagrant">vagrant</a></li>
-        
-        <li><a href="/tags-output/DevOps">DevOps</a></li>
-        
-        <li><a href="/tags-output/golang">golang</a></li>
-        
-        <li><a href="/tags-output/Datomic">Datomic</a></li>
-        
-    </ul>
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://humorless.github.io/posts-output/vagrant";
+            this.page.identifier = "Clojure development environment by Vagrant";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//humorless.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    
+
+
 </div>
 
             </div>

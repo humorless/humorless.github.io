@@ -12,11 +12,34 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Sat, 27 Apr 2019 05:32:00 +0000
+Mon, 13 May 2019 09:56:36 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://humorless.github.io/posts-output/vagrant
+</guid>
+<link>
+https://humorless.github.io/posts-output/vagrant
+</link>
+<title>
+Clojure development environment by Vagrant
+</title>
+<description>
+&lt;h2 id=&quot;tl;dr&quot;&gt;TL;DR&lt;/h2&gt;&lt;p&gt;If you want to have a portable Clojure development environment and you use Vagrant, vim-fireplace, you may consider to try my &lt;a href='https://github.com/humorless/dotfiles'&gt;Vagrantfile&lt;/a&gt;. &lt;/p&gt;&lt;pre&gt;&lt;code&gt;git clone https://github.com/humorless/dotfiles
+cd dotfiles
+vagrant up
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;certain&amp;#95;part&amp;#95;of&amp;#95;vagrantfile&amp;#95;you&amp;#95;may&amp;#95;need&amp;#95;to&amp;#95;remove.&quot;&gt;Certain part of vagrantfile you may need to remove.&lt;/h2&gt;&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;if Vagrant.has&amp;#95;plugin?&amp;#40;&amp;quot;vagrant-timezone&amp;quot;&amp;#41;
+  config.timezone.value = &amp;quot;Asia/Taipei&amp;quot;
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;the&amp;#95;beginning&amp;#95;of&amp;#95;this&amp;#95;repo&quot;&gt;The beginning of this repo&lt;/h2&gt;&lt;p&gt;Several years before, I created a github repo called &lt;code&gt;dotfiles&lt;/code&gt;, which is used to record my vimrc file. Later, every time when I changed my job, I modified my favorite vim plugin. I modified my vim plugin collection so many times. Sometimes, I installed certain vim cool plugin, but after a while, I totally forgot how to use it. There are not too many vim plugins in this dotfiles, because I am not a vim &lt;code&gt;l33t hax0r&lt;/code&gt;.&lt;/p&gt;&lt;h2 id=&quot;development&amp;#95;and&amp;#95;deployment&quot;&gt;development and deployment&lt;/h2&gt;&lt;p&gt;I have had a job that I needed to work at AWS cloud9 environment. Some of my jobs required me to install totally new development environment. Recently, I needed to deploy Clojure enviroment on production system, so I learned a little &lt;code&gt;ansible&lt;/code&gt; and I used ansible to install java8.&lt;/p&gt;&lt;p&gt;One day, I found that vagrant can use ansible to do provisioning, so I combined them together.&lt;/p&gt;&lt;h2 id=&quot;some&amp;#95;nice&amp;#95;tools&amp;#95;i&amp;#95;cannot&amp;#95;live&amp;#95;without&quot;&gt;Some nice tools I cannot live without&lt;/h2&gt;&lt;p&gt;&lt;code&gt;nvm&lt;/code&gt; is important to me because I usually need to change node version. &lt;code&gt;autojump&lt;/code&gt; is also important. &lt;/p&gt;
+</description>
+<pubDate>
+Mon, 13 May 2019 00:00:00 +0000
+</pubDate>
+</item>
 <item>
 <guid>
 https://humorless.github.io/posts-output/datomic
