@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Full Stack Clojure (全棧閉包): pattern</title>
-    <link rel="canonical" href="https://humorless.github.io/posts-output/pattern">
+    <title>Full Stack Clojure (全棧閉包): Posts Tagged &quot;Luminus&quot;</title>
+    <link rel="canonical" href="https://humorless.github.io/tags-output/Luminus">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -51,78 +51,17 @@
         <div class="col-lg-9">
             <div id="content">
                 
-<div id="post">
-    <div class="post-header">
-    <div id="post-meta" class="row">
-        <div class="col-lg-6">February 28, 2017</div>
-        
+<div id="posts-by-tag">
+    <div id="page-header">
+        <h2>Posts Tagged &quot;Luminus&quot;</h2>
     </div>
-    <h2>pattern</h2>
-</div>
-<div>
+    <ul>
     
-    <h2 id="patterns&#95;=&#95;programming&#95;with&#95;abstactions&#95;that&#95;are&#95;not&#95;powerful&#95;enough">patterns = programming with abstactions that are not powerful enough</h2><p>先來引述一下 Paul Graham 的句子<blockquote><p> When I see patterns in my programs, I consider it a sign of trouble. The shape of a program should reflect only the problem it needs to solve. Any other regularity in the code is a sign, to me at least, that I'm using abstractions that aren't powerful enough. </p><footer> Paul Graham - Revenge of the Nerds</footer> </blockquote>為了想出可以妥善解釋這段話的意思的 non-trivial 範例，其實我還想了滿久的。不料真的就在我學習 clojure 語言的過程之中找到了。這個範例是對某個 array 的每一個元素，做相同的運算處理：一個是循序處理、一個是平行處理。</p><p><!&ndash;more&ndash;></p><h3 id="golang&#95;的兩個版本">golang 的兩個版本</h3><p>循序處理的版本<pre><code class="golang">res := make&#40;&#91;&#93;float, N&#41;;
-for i,xi := range data {
-    func &#40;i int, xi float&#41; {
-        res&#91;i&#93; = doSomething&#40;i,xi&#41;;
-    } &#40;i, xi&#41;;
-}
-
-</code></pre></p><p>平行處理的版本<pre><code class="golang">type empty {}
-...
-data := make&#40;&#91;&#93;float, N&#41;;
-res := make&#40;&#91;&#93;float, N&#41;;
-sem := make&#40;chan empty, N&#41;;  // semaphore pattern
-...
-for i,xi := range data {
-    go func &#40;i int, xi float&#41; {
-        res&#91;i&#93; = doSomething&#40;i,xi&#41;;
-        sem &lt;- empty{};
-    } &#40;i, xi&#41;;
-}
-// wait for goroutines to finish
-for i := 0; i &lt; N; ++i { &lt;-sem }
-</code></pre></p><h3 id="clojure&#95;的兩個版本">clojure 的兩個版本</h3><p>循序處理的版本<pre><code class="clj">&#40;defn myfun &#91;coll&#93;
-  &#40;map doSomething coll&#41;&#41;
-</code></pre></p><p>平行處理的版本</p><pre><code class="clj">&#40;defn myfun &#91;coll&#93;
-  &#40;pmap doSomething coll&#41;&#41;
-
-</code></pre><h3 id="抽象層次的差異">抽象層次的差異</h3><p>比較這兩種語言寫的四段程式碼，很快可以發現，循序處理的範例都相當的簡單。然而，當換成平行處理的版本時， golang 的實作比 clojure 難多了。需要用 golang 的 channel 做出一個 semaphore 的 pattern 才能實現。而相較之下， clojure 把 map 換成 pmap 就可以了。由此可見， clojure 在這個例子之中，是一種足夠強的抽象層，可以輕易地去表達這個平行處理的語意。</p>
-</div>
-
-<div id="post-tags">
-    <b>Tags: </b>
+        <li>
+            <a href="/posts-output/assembly">Using datomic with Luminus: Where to put our queries?</a>
+        </li>
     
-    <a href="/tags-output/clojure">clojure</a>
-    
-    <a href="/tags-output/golang">golang</a>
-    
-</div>
-
-
-    <div id="prev-next">
-        
-        <a href="/posts-output/groupby">&laquo; groupby</a>
-        
-        
-    </div>
-
-    
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-        var disqus_config = function () {
-            this.page.url = "https://humorless.github.io/posts-output/pattern";
-            this.page.identifier = "pattern";
-        };
-        (function() {
-            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-            dsq.src = '//humorless.disqus.com/embed.js';
-            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-        })();
-    </script>
-    
-
-
+    </ul>
 </div>
 
             </div>

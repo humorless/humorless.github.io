@@ -12,11 +12,34 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Mon, 13 May 2019 09:56:36 +0000
+Wed, 12 Jun 2019 11:18:52 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://humorless.github.io/posts-output/assembly
+</guid>
+<link>
+https://humorless.github.io/posts-output/assembly
+</link>
+<title>
+Using datomic with Luminus: Where to put our queries?
+</title>
+<description>
+&lt;p&gt;If we initiate a Luminus project with db option other than datomic, for example &lt;code&gt;+postgres&lt;/code&gt;, the code arrangement is much more straight forward. Open the file &lt;code&gt;resources/sql/queries.sql&lt;/code&gt;, and put sql query and sql transaction command in this file. Then, we can just require the &lt;code&gt;xxx.db.core&lt;/code&gt; namespace, the db queries or commands are totally available. &lt;/p&gt;&lt;h2 id=&quot;where&amp;#95;to&amp;#95;put&amp;#95;the&amp;#95;db&amp;#95;queries&amp;#95;if&amp;#95;we&amp;#95;use&amp;#95;db&amp;#95;option&amp;#95;as&amp;#95;+datomic?&quot;&gt;Where to put the db queries if we use db option as +datomic?&lt;/h2&gt;&lt;p&gt;Put datomic queries in the same file with connection state in &lt;code&gt;xxx.db.core&lt;/code&gt; is the first attempt I tried. However, the datomic queries actually execute in the application program runtime, not in the db server runtime. Also, if we design the query function to accept datomic db value as input argument, then our query function will become pure functions.&lt;/p&gt;&lt;p&gt;After discovering the idea that our query functions can be pure functions, I decide to arrange my application namespaces like this:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;prj.&amp;#91;service&amp;#93;.assembly ---&amp;gt; prj.db.core
+                            ;; assembly only refers conn variable from prj.db.core
+                       ---&amp;gt; datomic.api
+                       ---&amp;gt; prj.db.query
+                             ;; I make all the query functions as pure functions and put them here.
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The namespace &lt;code&gt;&amp;#91;service&amp;#93;.assembly&lt;/code&gt; is used to write utility funcitons (pure functions) and stateful things like datomic connection together.&lt;/p&gt;&lt;h2 id=&quot;where&amp;#95;to&amp;#95;put&amp;#95;the&amp;#95;db&amp;#95;transactions?&quot;&gt;Where to put the db transactions?&lt;/h2&gt;&lt;p&gt;Given that &lt;code&gt;&amp;#91;service&amp;#93;.assembly&lt;/code&gt; refers &lt;code&gt;conn&lt;/code&gt;, I decide to call &lt;code&gt;&amp;#40;d/transact conn ... &amp;#41;&lt;/code&gt; in this namespace. However, I still need to do some transformation to get proper transaction data that can directly put into &lt;code&gt;d/transact&lt;/code&gt;. Therefore, the arrangement will be like:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;prj.&amp;#91;service&amp;#93;.assembly ---&amp;gt; prj.db.command
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In &lt;code&gt;prj.db.command&lt;/code&gt;, I put the transformation functions that used to create datomic transaction data. The transformation functions are also pure functions.&lt;/p&gt;&lt;p&gt;Datomic really make more part of our application pure!&lt;/p&gt;
+</description>
+<pubDate>
+Wed, 12 Jun 2019 00:00:00 +0000
+</pubDate>
+</item>
 <item>
 <guid>
 https://humorless.github.io/posts-output/vagrant

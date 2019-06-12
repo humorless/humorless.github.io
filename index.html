@@ -54,48 +54,46 @@
 <div id="post">
     <div class="post-header">
     <div id="post-meta" class="row">
-        <div class="col-lg-6">May 13, 2019</div>
+        <div class="col-lg-6">June 12, 2019</div>
         
     </div>
-    <h2>Clojure development environment by Vagrant</h2>
+    <h2>Using datomic with Luminus: Where to put our queries?</h2>
 </div>
 <div>
     
-    <h2 id="tl;dr">TL;DR</h2><p>If you want to have a portable Clojure development environment and you use Vagrant, vim-fireplace, you may consider to try my <a href='https://github.com/humorless/dotfiles'>Vagrantfile</a>. </p><pre><code>git clone https://github.com/humorless/dotfiles
-cd dotfiles
-vagrant up
-</code></pre><h2 id="certain&#95;part&#95;of&#95;vagrantfile&#95;you&#95;may&#95;need&#95;to&#95;remove.">Certain part of vagrantfile you may need to remove.</h2><pre><code class="ruby">if Vagrant.has&#95;plugin?&#40;&quot;vagrant-timezone&quot;&#41;
-  config.timezone.value = &quot;Asia/Taipei&quot;
-end
-</code></pre><h2 id="the&#95;beginning&#95;of&#95;this&#95;repo">The beginning of this repo</h2><p>Several years before, I created a github repo called <code>dotfiles</code>, which is used to record my vimrc file. Later, every time when I changed my job, I modified my favorite vim plugin. I modified my vim plugin collection so many times. Sometimes, I installed certain vim cool plugin, but after a while, I totally forgot how to use it. There are not too many vim plugins in this dotfiles, because I am not a vim <code>l33t hax0r</code>.</p><h2 id="development&#95;and&#95;deployment">development and deployment</h2><p>I have had a job that I needed to work at AWS cloud9 environment. Some of my jobs required me to install totally new development environment. Recently, I needed to deploy Clojure enviroment on production system, so I learned a little <code>ansible</code> and I used ansible to install java8.</p><p>One day, I found that vagrant can use ansible to do provisioning, so I combined them together.</p><h2 id="some&#95;nice&#95;tools&#95;i&#95;cannot&#95;live&#95;without">Some nice tools I cannot live without</h2><p><code>nvm</code> is important to me because I usually need to change node version. <code>autojump</code> is also important. </p>
+    <p>If we initiate a Luminus project with db option other than datomic, for example <code>+postgres</code>, the code arrangement is much more straight forward. Open the file <code>resources/sql/queries.sql</code>, and put sql query and sql transaction command in this file. Then, we can just require the <code>xxx.db.core</code> namespace, the db queries or commands are totally available. </p><h2 id="where&#95;to&#95;put&#95;the&#95;db&#95;queries&#95;if&#95;we&#95;use&#95;db&#95;option&#95;as&#95;+datomic?">Where to put the db queries if we use db option as +datomic?</h2><p>Put datomic queries in the same file with connection state in <code>xxx.db.core</code> is the first attempt I tried. However, the datomic queries actually execute in the application program runtime, not in the db server runtime. Also, if we design the query function to accept datomic db value as input argument, then our query function will become pure functions.</p><p>After discovering the idea that our query functions can be pure functions, I decide to arrange my application namespaces like this:</p><pre><code>prj.&#91;service&#93;.assembly ---&gt; prj.db.core
+                            ;; assembly only refers conn variable from prj.db.core
+                       ---&gt; datomic.api
+                       ---&gt; prj.db.query
+                             ;; I make all the query functions as pure functions and put them here.
+</code></pre><p>The namespace <code>&#91;service&#93;.assembly</code> is used to write utility funcitons (pure functions) and stateful things like datomic connection together.</p><h2 id="where&#95;to&#95;put&#95;the&#95;db&#95;transactions?">Where to put the db transactions?</h2><p>Given that <code>&#91;service&#93;.assembly</code> refers <code>conn</code>, I decide to call <code>&#40;d/transact conn ... &#41;</code> in this namespace. However, I still need to do some transformation to get proper transaction data that can directly put into <code>d/transact</code>. Therefore, the arrangement will be like:</p><pre><code>prj.&#91;service&#93;.assembly ---&gt; prj.db.command
+</code></pre><p>In <code>prj.db.command</code>, I put the transformation functions that used to create datomic transaction data. The transformation functions are also pure functions.</p><p>Datomic really make more part of our application pure!</p>
 </div>
 
 <div id="post-tags">
     <b>Tags: </b>
     
-    <a href="/tags-output/ansible">ansible</a>
+    <a href="/tags-output/Luminus">Luminus</a>
     
-    <a href="/tags-output/Clojure">Clojure</a>
+    <a href="/tags-output/assembly">assembly</a>
     
-    <a href="/tags-output/vim-fireplace">vim-fireplace</a>
+    <a href="/tags-output/namespace">namespace</a>
     
-    <a href="/tags-output/vagrant">vagrant</a>
-    
-    <a href="/tags-output/DevOps">DevOps</a>
+    <a href="/tags-output/Datomic">Datomic</a>
     
 </div>
 
 
     
     <div id="comments">
-        <a href="/posts-output/vagrant#disqus_thread">View Comments</a>
+        <a href="/posts-output/assembly#disqus_thread">View Comments</a>
     </div>
     
 
     <div id="prev-next">
         
         
-        <a class="right" href="/posts-output/datomic">Using Datomic in my app &raquo;</a>
+        <a class="right" href="/posts-output/vagrant">Clojure development environment by Vagrant &raquo;</a>
         
     </div>
 </div>
@@ -116,6 +114,8 @@ end
                     <h3>Recent Posts</h3>
                     <ul>
                         
+                        <li><a href="/posts-output/assembly">Using datomic with Luminus: Where to put our queries?</a></li>
+                        
                         <li><a href="/posts-output/vagrant">Clojure development environment by Vagrant</a></li>
                         
                         <li><a href="/posts-output/datomic">Using Datomic in my app</a></li>
@@ -123,8 +123,6 @@ end
                         <li><a href="/posts-output/REPL">REPL tips</a></li>
                         
                         <li><a href="/posts-output/dependency-injection">dependency injection with Clojure</a></li>
-                        
-                        <li><a href="/posts-output/groupby">groupby</a></li>
                         
                     </ul>
                 </div>
@@ -136,6 +134,8 @@ end
                         
                         <li><a href="/tags-output/tips">tips</a></li>
                         
+                        <li><a href="/tags-output/Luminus">Luminus</a></li>
+                        
                         <li><a href="/tags-output/clojure">clojure</a></li>
                         
                         <li><a href="/tags-output/experience">experience</a></li>
@@ -145,6 +145,8 @@ end
                         <li><a href="/tags-output/groupby">groupby</a></li>
                         
                         <li><a href="/tags-output/unit test">unit test</a></li>
+                        
+                        <li><a href="/tags-output/assembly">assembly</a></li>
                         
                         <li><a href="/tags-output/database">database</a></li>
                         
@@ -159,6 +161,8 @@ end
                         <li><a href="/tags-output/vagrant">vagrant</a></li>
                         
                         <li><a href="/tags-output/DevOps">DevOps</a></li>
+                        
+                        <li><a href="/tags-output/namespace">namespace</a></li>
                         
                         <li><a href="/tags-output/golang">golang</a></li>
                         
