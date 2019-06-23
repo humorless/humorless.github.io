@@ -29,6 +29,8 @@ My final proposal was a login module like this:
 
 ## Revenue spreading problem seems to be koan in 4clojure.com
 
+There was a business requirement, I called it as revenue spreading problem, in this enterprise software.
+
 Revenue spreading problem:
 1. For every order, there is a start date and end date of this order. The total days of an order are `(end date - start date + 1)`
 2. For every order, there is a net revenue of this order.
@@ -36,7 +38,7 @@ Revenue spreading problem:
 
 If an order starts at 5/5, ends at 6/8 with total revenue as 35 dollars, then the total days of this order is (27+8) = 35 days. Also, the monthly revenue of May is 27 dollars and monthly revenue of June is 8 dollars.
 
-To solve this, at the beginning, I used `first-day-of-the-month` and `last-day-of-the-month` in `clj-time` library to calculate how many days within a month. The first version solution is a traditional imperative solution. I quickly found that I could do better with functional thinking.
+To solve this, at the beginning, I used `first-day-of-the-month` and `last-day-of-the-month` in `clj-time` library to calculate how many days within a month. The first version solution was a traditional imperative solution. I quickly found that I could do better with functional thinking.
 
 My improved version:
 1. Generate a sequence of time using `period-sec` in `clj-time`. The period of time is just one day long and the start date/end date are the start date/end date of certain order.
