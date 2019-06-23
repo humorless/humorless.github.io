@@ -9,16 +9,16 @@ I live in Taiwan and I can not find Clojure jobs here. Although the first legal 
 
 ## Technical stack issues
 
-When I discussed with my clients about this enterprise software solution, we focused on the problem domain. However, when I told my clients that I want to use Clojure, Datomic, and ClojureScript, my clients said no. They said a lot of cliches like they never hear Clojure before, difficult to find Clojure programmers. Then, I made some compromises: I would use React with javascript in frontend but Clojure in backend with Datomic as database. For Clojure, I provided the reasons that the business requirements had temporal queries which were like a piece of cake for Datomic but very time-consuming for traditional relational databases.
+When I discussed with my clients about this enterprise software solution, we focused on the problem domain. However, when I told my clients that I want to use Clojure, Datomic, and ClojureScript, my clients said no. They said a lot of cliches like they never hear Clojure before, it would be difficult to find Clojure programmers. Then, I made some compromises: I would use React with javascript in frontend but Clojure in backend with Datomic as database. For Clojure, I provided the reason that the business requirements had temporal queries which were like a piece of cake for Datomic but very time-consuming for traditional relational databases.
 
 After developing this project for a while, I regretted that I did not insist on ClojureScript. I really spent a lot of time on javascript boilerplate code, and the time spent did not bring any value to my clients.
 
 ## A very simple user login is good enough for a small group of users
 
-The enterprise software solution needed to be an on-premise solution, installed on the private network at LINE offices. There are about 30 users login everyday to use this software. At the beginning, I thought three different ways to solve the user login problems:
+The enterprise software solution needed to be an on-premise solution, installed on the private network at LINE offices. There would be about 30 users login everyday. At the beginning, I thought three different ways to solve the user login problems:
 
 1. Single signed-on with other enterprise software in LINE
-2. Leverage third party Authorization service
+2. Leverage third party authorization service
 3. Traditional user login backend APIs and frontend UI with login/register/user management functions like resetting password.
 
 Option 2 might be fast enough, but my clients did not like third party service.
@@ -50,11 +50,11 @@ My improved version:
 
 I was not an expert of DevOps. When I needed to deploy the project, I took some time to study ansible because the great book `Deploying Your First Clojure App ...From the Shadows shows` introduced ansible. I still felt ansible is a great tool worth learning, however, the target servers were under the bastion host.
 
-Engineers in LINE Taiwan told that they installed a Drone CI/CD server in the virtual private network behind the bastion host. As a Clojure developer, I decided to use LambdaCD. Actually, it was even simpler than Drone. Parentheses abundant lisp clj files were more expressive than yaml files.
+Engineers in LINE Taiwan told me that they installed a Drone CI/CD server in the virtual private network behind the bastion host. As a Clojure developer, I decided to use LambdaCD. Actually, it was even simpler than Drone. Parentheses abundant lisp clj files were more expressive than yaml files.
 
-When I encountered problems, I asked questions at LambdaCD github repo. Within two days, the author of LambdaCD kindly replied my questions. I thought LambdaCD is worth of recommendation, both the quality of the software and very quick response to their users.
+When I encountered problems, I asked questions at LambdaCD github repo. Within two days, the author of LambdaCD kindly replied my questions. I thought LambdaCD is worth of recommendation, both the quality of the software and quick response.
 
 ## Evangelism of Clojure
 
-Given that I did software consulting at a big company, I applied for technical talk inside the company. Grabbing the chance, I introduced Clojure to 10~ developers. Those who already had experience with Scala showed more interests than others. Good beginning anyways, I thought. Here is the [slide](https://www.slideshare.net/humorless/the-productivity-brought-by-clojure-149170292/) of technical talk.
+Given that I did software consulting at a big company, I could apply for technical talk inside the company. Grabbing the chance, I introduced Clojure to 10~ developers. Those who already had experience with Scala showed more interests than others. Good beginning anyways, I thought. Here is the [slide](https://www.slideshare.net/humorless/the-productivity-brought-by-clojure-149170292/) of technical talk.
 
