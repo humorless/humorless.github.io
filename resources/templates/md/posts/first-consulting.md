@@ -5,17 +5,17 @@
  :tags ["Clojure", "Consulting"]
 }
 
-I live in Taiwan and I can not find Clojure jobs here. Although the first legal gay wedding in Asia took place here, it seems that the real programming language innovation still needs some evangelists to spread it. Therefore, I decided to create Clojure job by myself in January this year: I had a chance to develop enterprise software for the LINE Taiwan, and I chose Clojure as my primary technical stack.
+I live in Taiwan and I can not find Clojure jobs here. Although the first legal gay wedding in Asia took place here, it seems that the real programming language innovation still needs some evangelists to spread it. Therefore, I decide to create Clojure job by myself. In January this year, I had a chance to develop enterprise software for the LINE Taiwan, and I chose Clojure as my primary technical stack.
 
-## I should discuss about technical stack even before we signed the contract.
+## Technical stack issues
 
-When I discussed with my client about this enterprise software solution, we focused on the problem domain. However, when I told my clients that I want to use Clojure, Datomic, and ClojureScript, my clients wanted to say no. They said a lot of cliches like they never hear Clojure before, difficult to find Clojure programmers. Finally, I made some compromises: I still used React with javascript in frontend, but I used Datomic and Clojure on backend. I proposed the reason that their business requirements have temporal queries which will be like a piece of cake for Datomic but very time-consuming for traditional relational databases.
+When I discussed with my clients about this enterprise software solution, we focused on the problem domain. However, when I told my clients that I want to use Clojure, Datomic, and ClojureScript, my clients said no. They said a lot of cliches like they never hear Clojure before, difficult to find Clojure programmers. Then, I made some compromises: I would use React with javascript in frontend but Clojure in backend with Datomic as database. For Clojure, I provided the reasons that the business requirements had temporal queries which were like a piece of cake for Datomic but very time-consuming for traditional relational databases.
 
-After developing this project for a while, I regretted that I did not insist on ClojureScript. I really spent some time on javascript boilerplate code, and the time spent did not bring any value to my clients.
+After developing this project for a while, I regretted that I did not insist on ClojureScript. I really spent a lot of time on javascript boilerplate code, and the time spent did not bring any value to my clients.
 
 ## A very simple user login is good enough for a small group of users
 
-The enterprise software solution needs to be an on-premise solution, installed on the private network at LINE offices. There will be about 30 users login everyday to use this software. At the beginning, I thought three different ways to solve the user login problems:
+The enterprise software solution needed to be an on-premise solution, installed on the private network at LINE offices. There are about 30 users login everyday to use this software. At the beginning, I thought three different ways to solve the user login problems:
 
 1. Single signed-on with other enterprise software in LINE
 2. Leverage third party Authorization service
@@ -27,7 +27,7 @@ My final proposal was a login module like this:
 1. Frontend UI provided the login and password modification functions to ordinary users.
 2. The administrator of this system used ETL (extract-transform-load) to manage user accounts. Given this design, we did not need any user registration or user accounts management UI.
 
-## Revenue spreading problem seems to be koan in 4clojure.com
+## Revenue spreading problem
 
 There was a business requirement, I called it as revenue spreading problem, in this enterprise software.
 
@@ -46,13 +46,13 @@ My improved version:
 3. Calculate how many days of each group of the step 2 result.
 4. Spread the revenue using step 3 result.
 
-## LambdaCD and ansible
+## CI/CD issues
 
 I was not an expert of DevOps. When I needed to deploy the project, I took some time to study ansible because the great book `Deploying Your First Clojure App ...From the Shadows shows` introduced ansible. I still felt ansible is a great tool worth learning, however, the target servers were under the bastion host.
 
-Engineers in LINE Taiwan told that they installed a Drone CI/CD server in the virtual private network under the bastion host. As a Clojure developer, I decided to use LambdaCD. Actually, it was even simpler than Drone. Parentheses abundant lisp clj files were more expressive than yaml.
+Engineers in LINE Taiwan told that they installed a Drone CI/CD server in the virtual private network behind the bastion host. As a Clojure developer, I decided to use LambdaCD. Actually, it was even simpler than Drone. Parentheses abundant lisp clj files were more expressive than yaml files.
 
-When I encountered problems, I used github issues to ask at LambdaCD github repo. Within two days, the author of LambdaCD kindly replied my questions. I thought LambdaCD is worth of recommendation.
+When I encountered problems, I asked questions at LambdaCD github repo. Within two days, the author of LambdaCD kindly replied my questions. I thought LambdaCD is worth of recommendation, both the quality of the software and very quick response to their users.
 
 ## Evangelism of Clojure
 
