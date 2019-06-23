@@ -54,6 +54,5 @@ When I encountered problems, I used github issues to ask at LambdaCD github repo
 
 ## Evangelism of Clojure
 
-Given that I did software consulting at a big company, I applied for technical talk inside the company. Grabbing the chance, I introduced Clojure to 10~ developers. Those who already had experience with Scala showed more interests than others. Good beginning anyways, I thought. Below is the slide of my talk.
+Given that I did software consulting at a big company, I applied for technical talk inside the company. Grabbing the chance, I introduced Clojure to 10~ developers. Those who already had experience with Scala showed more interests than others. Good beginning anyways, I thought. Here is the [slide](https://www.slideshare.net/humorless/the-productivity-brought-by-clojure-149170292/) of technical talk.
 
-<iframe src="//www.slideshare.net/slideshow/embed_code/key/yTf50LNVBq0608" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/humorless/the-productivity-brought-by-clojure-149170292" title="The productivity brought by Clojure" target="_blank">The productivity brought by Clojure</a> </strong> from <strong><a href="https://www.slideshare.net/humorless" target="_blank">Laurence Chen</a></strong> </div>
