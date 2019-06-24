@@ -2,7 +2,7 @@
  :title "Lessons learned from the software consulting job"
  :layout :post
  :date "2019-06-23"
- :tags ["Clojure", "Consulting"]
+ :tags ["consulting", "experience"]
 }
 
 I live in Taiwan and I can not find Clojure jobs here. Although the first legal gay wedding in Asia took place here, it seems that the real programming language innovation still needs some evangelists to spread it. Therefore, I decide to create Clojure job by myself. In January this year, I had a chance to develop enterprise software for the LINE Taiwan, and I chose Clojure as my primary technical stack.

@@ -1,7 +1,7 @@
 {:title "pattern"
  :date "2017-02-28"
  :layout :post
- :tags  ["golang", "clojure"]}
+ :tags  ["golang"]}
 ## patterns = programming with abstactions that are not powerful enough
 
 先來引述一下 Paul Graham 的句子

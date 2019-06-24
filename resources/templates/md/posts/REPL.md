@@ -1,7 +1,7 @@
 {:title "REPL tips"
  :layout :post
  :date "2019-03-30"
- :tags ["repl", "clojure", "tips"]}
+ :tags ["repl", "tips"]}
 
 從今年 2 月開始，接了一個公司內部應用軟體的專案開發，我用 clojure + luminus + datomic 來實作。不知不覺也就每天寫 clojure 的 REPL 近兩個月了。每天玩 REPL 之後，很快就發現一些過去我用 REPL 的盲點。
 
