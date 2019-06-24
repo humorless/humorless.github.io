@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Full Stack Clojure (全棧閉包): Posts Tagged &quot;clojure&quot;</title>
-    <link rel="canonical" href="https://humorless.github.io/tags-output/clojure">
+    <title>Full Stack Clojure (全棧閉包)</title>
+    <link rel="canonical" href="https://humorless.github.io">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -51,25 +51,54 @@
         <div class="col-lg-9">
             <div id="content">
                 
-<div id="posts-by-tag">
-    <div id="page-header">
-        <h2>Posts Tagged &quot;clojure&quot;</h2>
+<div id="post">
+    
+    <div class="post-header">
+        <h2>dependency injection with Clojure</h2>
+        <div id="post-meta">
+            
+            <div class="date">July 12, 2017</div>
+        </div>
     </div>
-    <ul>
+    <p>寫 clojure 的時候，雖然套用了 REPL-driven development 的開發方式，已經相對可以讓大多數的函數很快地做過測試。但是，隨著要開發的專案愈來愈大，還是一樣需要用標準的寫法來寫單元測試 (unit test) 。有一個非正規的統計，如果是 Ruby on Rail 的專案，一般而言，90% 的函數都是有副作用的。然而， clojure 語言的專案，往往只有 40% 的函數帶有副作用。</p><p>即使是寫 clojure 語言，還是會遇到有 side effect 的函數，那比較好的寫法是怎麼樣呢？</p>
+    <a href="/posts-output/dependency-injection">Continue reading &#8594;</a>
+    <hr>
     
-        <li>
-            <a href="/posts-output/REPL">REPL tips</a>
-        </li>
+    <div class="post-header">
+        <h2>groupby</h2>
+        <div id="post-meta">
+            
+            <div class="date">May 21, 2017</div>
+        </div>
+    </div>
+    <p>一開始是我在寫 <a href="http://www.4clojure.com/problem/63">4clojure</a> 的練習題的時候，寫到了一個題目，要重新實現 clojure 語言的 groupby 函數。我糾結了好一陣子，又查了不少資料，才勉強用 reduce 寫出來。然而，最近卻在工作中，用上了 groupby 。</p><pre><code class="clojure">(fn f [k coll]
+  (reduce
+    (fn [c v]
+      (update-in c [(k v)] (fnil conj []) v))
+    {} coll))
+
+</code></pre>
+    <a href="/posts-output/groupby">Continue reading &#8594;</a>
+    <hr>
     
-        <li>
-            <a href="/posts-output/dependency-injection">dependency injection with Clojure</a>
-        </li>
+    <div class="post-header">
+        <h2>pattern</h2>
+        <div id="post-meta">
+            
+            <div class="date">February 28, 2017</div>
+        </div>
+    </div>
+    <h2 id="patterns_=_programming_with_abstactions_that_are_not_powerful_enough">patterns = programming with abstactions that are not powerful enough</h2><p>先來引述一下 Paul Graham 的句子</p>
+    <a href="/posts-output/pattern">Continue reading &#8594;</a>
+    <hr>
     
-        <li>
-            <a href="/posts-output/pattern">pattern</a>
-        </li>
-    
-    </ul>
+
+    <div id="prev-next">
+        
+        <a class="left" href="/">&laquo; Prev</a>
+        
+        
+    </div>
 </div>
 
             </div>
@@ -110,7 +139,7 @@
                         
                         <li><a href="/tags-output/Luminus">Luminus</a></li>
                         
-                        <li><a href="/tags-output/clojure">clojure</a></li>
+                        <li><a href="/tags-output/consulting">consulting</a></li>
                         
                         <li><a href="/tags-output/experience">experience</a></li>
                         
@@ -123,8 +152,6 @@
                         <li><a href="/tags-output/assembly">assembly</a></li>
                         
                         <li><a href="/tags-output/database">database</a></li>
-                        
-                        <li><a href="/tags-output/Clojure">Clojure</a></li>
                         
                         <li><a href="/tags-output/repl">repl</a></li>
                         
@@ -139,8 +166,6 @@
                         <li><a href="/tags-output/namespace">namespace</a></li>
                         
                         <li><a href="/tags-output/golang">golang</a></li>
-                        
-                        <li><a href="/tags-output/Consulting">Consulting</a></li>
                         
                         <li><a href="/tags-output/Datomic">Datomic</a></li>
                         
