@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Full Stack Clojure (全棧閉包): A Clojurian&#39;s idioms and patterns for ETL</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/etl">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
+          type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+    <link href="/css/screen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Full Stack Clojure (全棧閉包)</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li ><a href="/">Home</a></li>
+                <li
+                ><a href="/archives">Archives</a></li>
+                
+                <li
+                >
+                <a href="/pages-output/about">About</a>
+                </li>
+                
+                <li><a href="/feed.xml">RSS</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div id="content">
+                
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">July 1, 2019</div>
+        
+    </div>
+    <h2>A Clojurian&#39;s idioms and patterns for ETL</h2>
+</div>
+<div>
+    
+    <h2 id="background">Background</h2><p>I needed to do eight Excel ETLs at my project. At the beginning, I just implemented some of the ETLs without any design. I did not even implement schema validation, and then I felt the pain soon. After several re-writing, I abstracted out some idioms and patterns for ETL.</p><h2 id="problems">Problems</h2><p>We need to import data from several Excel files into Datomic database. There are several concerns with the ETL (extract-transform-load):</p><ol><li>Schema validation:   Can we have a validation function that we only need to inject the schema and then the validation function will handle all the rest for us? </li><li>Transformation complexity:   The transformation from Excel to Datomic table varies a lot. The simplest one is just copy data, but the complex ones need to look up tables in the database. How can we organize different type of transformation functions such that the functions can be more reusable and composable?</li><li>Database upsert semantic:   The identity key of the database table may be compound fields, or there may be some cardinality-many fields in the database table. That is to say, the basic upsert semantic offered by Datomic is not enough.</li></ol><h3 id="solution&#95;for&#95;schema&#95;validation">Solution for schema validation</h3><p>The library <code>clojure.spec</code> is great for schema validation. </p><pre><code>;; library functions defined at utility namespace
+&#40;defn check-raw-fn
+  &quot;assemble schema and then create a validation fn&quot;
+  &#91;schema&#93;
+  &#40;fn check-raw
+    &#91;data&#93;
+    &#40;if &#40;spec/valid? schema data&#41;
+      data
+      &#40;let &#91;desc &#40;spec/explain-str schema data&#41;&#93;
+        &#40;throw &#40;ex-info desc {:causes data :desc desc}&#41;&#41;&#41;&#41;&#41;&#41;
+
+;; Example application functions
+&#40;spec/def ::apply-time inst?&#41;
+&#40;spec/def ::customer-id string?&#41;
+&#40;spec/def ::lamp-customer-id string?&#41;
+&#40;spec/def ::sales-name string?&#41;
+&#40;spec/def ::source #{&quot;agp&quot; &quot;lap&quot;}&#41;
+
+&#40;spec/def ::mapping
+  &#40;spec/&#42; 
+    &#40;spec/keys :req-un
+               &#91;::apply-time ::customer-id ::lamp-customer-id ::sales-name ::source&#93;&#41;&#41;&#41;
+
+&#40;def &#94;:private check-raw
+  &#40;utility/check-raw-fn ::mapping&#41;&#41;
+</code></pre><p>In this design:</p><ul><li>Even though I do not know how many rows an Excel file may have, I can still use <code>&#40;spec/&#42; ...&#41;</code> to represent the schema for the Excel file. If the spec does not offer the semantic like <code>&#40;spec/&#42; ...&#41;</code>, I have to write some loop logic in <code>check-raw-fn</code> function, which causes the context dependency.</li><li>The spec names are just the same as the column names of Excel. Keep it simple making the program more robust.</li><li>If a string has only a few possible options, represent it in the form as <code>#{option1 option2 ...}</code></li><li>When throwing exception, I use <code>&#40;ex-info ...&#41;</code> and I put the output of <code>&#40;spec/explain-str ...&#41;</code> into an exception. Then, I can find out what is wrong by just reading the exception message. </li></ul><p>Also, at the trigger API of ETL, the web API deliberately catches only certain types of Exception:</p><pre><code>&#40;try &#40;if-let &#91;r &#40;etl/sync-data cmd filename&#41;&#93;
+            &#40;ok {:result :insert-done}&#41;
+            &#40;ok {:result :already-sync}&#41;&#41;
+          &#40;catch clojure.lang.ExceptionInfo e
+            &#40;bad-request {:reason &#40;ex-data e&#41;}&#41;&#41;
+          &#40;catch java.util.concurrent.ExecutionException e
+            &#40;bad-request {:reason &#40;.getCause e&#41;}&#41;&#41;&#41;
+</code></pre><p>The exception <code>clojure.lang.ExceptionInfo</code> only catches the schema validation error thrown by my application code. The exception <code>java.util.concurrent.ExecutionException</code> can catch the error from Datomic transaction. Other exceptions may happen with lower possibility, so I let them pass over and be recorded in log file.</p><h3 id="solution&#95;for&#95;transformation&#95;complexity">Solution for transformation complexity</h3><p>I propose a pattern, which I call it as <code>let over map-merge</code> to handle the transformation complexity.</p><p>Consider a transformation function <code>data-&gt;txes</code>, both the input and the output are sequences of map:</p><ul><li>The single map in the input data represents the row in the Excel file.</li><li>The single map in the output <code>txes</code> represents the row in the Datomic table.</li></ul><pre><code>&#40;defn- data-&gt;txes
+  &quot;data is a sequence of {HashMap}&quot;
+  &#91;data&#93;
+  &#40;let &#91;db &#40;d/db conn&#41;
+        table &#40;utility/tax-id-&gt;c-eid db&#41;&#93;
+    &#40;map #&#40;transformation-f table %&#41; data&#41;&#41;&#41;
+</code></pre><p>We can easily divide the transformation into two categories:</p><ol><li>Basic transformation: Just copy the field, or with pure function transformation.</li><li>Complex transformation: When transforming the input data, we need to also look up the database content.</li></ol><p>If we pull out <code>basic-mapping</code> and <code>complex-mapping</code> from <code>transformation-f</code>, we can change the original code into</p><pre><code>&#40;defn- data-&gt;txes
+  &#91;data&#93;
+  &#40;let &#91;db &#40;d/db conn&#41;
+        table &#40;utility/tax-id-&gt;c-eid db&#41;&#93;
+    &#40;let &#91;basic-tx &#40;map basic-mapping data&#41;
+          complex-tx &#40;map #&#40;complex-mapping table %&#41; data&#41;&#93;
+      &#40;map merge basic-tx complex-tx&#41;&#41;&#41;&#41;
+</code></pre><p>With this <code>let over map-merge</code> pattern, we can make the granularity of the transformation function smaller so as to make them more reusable and composable. In certain cases, basic-mapping only needs to change the key-name in the hash map, so we can use <code>clojure.set/rename-keys</code> to implement the basic-mapping.</p><h3 id="solution&#95;for&#95;database&#95;upsert&#95;semantic">Solution for database upsert semantic</h3><p>In Datomic, we can use the <code>:db.unique/identity</code> to make certain schema work like primary key in traditional RDBMS. </p><h4 id="compound&#95;primary&#95;key">Compound primary key</h4><p>Consider tha table with compound primary key as <code>stream-unique-id, writing-time, source</code>. How to do upsert when we have <code>txes</code> like below?</p><pre><code> &#91;#:rev-stream{:stream-unique-id &quot;AA&quot;
+               :writing-time #inst &quot;2019-04-01T02:39:00.000-00:00&quot;
+               :source :etl.source/agp
+               :campaign-name &quot;BB&quot;}&#93;
+</code></pre><p>With a db transaction function <code>upsert-rev-stream</code>, we can simply write <code>txes</code> as </p><pre><code> &#91;&#91;:fn/upsert-rev-stream 
+   #:rev-stream{:stream-unique-id &quot;AA
+                :writing-time #inst &quot;2019-04-01T02:39:00.000-00:00&quot;
+                :source :etl.source/agp
+                :campaign-name &quot;BB&quot;}&#93;&#93;
+</code></pre><p>The transaction function <code>:fn/upsert-rev-stream</code> handles the upsert complexity.</p><pre><code> {:db/id #db/id &#91;:db.part/user&#93;
+  :db/ident :fn/upsert-rev-stream
+  :db/doc &quot;The primary key of rev-stream is compound key&quot;
+  :db/fn #db/fn
+  {:lang :clojure
+   :params &#91;db m&#93;
+   :code &#40;if-let &#91;id &#40;ffirst
+                      &#40;d/q '&#91;:find ?e
+                             :in $ ?u ?t ?s
+                             :where
+                             &#91;?e :rev-stream/stream-unique-id ?u&#93;
+                             &#91;?e :rev-stream/writing-time ?t&#93;
+                             &#91;?e :rev-stream/source ?s&#93;&#93;
+                           db &#40;:rev-stream/stream-unique-id m&#41;
+                           &#40;:rev-stream/writing-time m&#41;
+                           &#40;:rev-stream/source m&#41;&#41;&#41;&#93;
+           &#91;&#40;-&gt; &#40;dissoc m :rev-stream/stream-unique-id
+                        :rev-stream/writing-time
+                        :rev-stream/source&#41;
+                &#40;assoc :db/id id&#41;&#41;&#93;
+           &#91;m&#93;&#41;}}
+</code></pre><h4 id="cardinality&#95;many">Cardinality many</h4><p>Consider tha table with a cardinality-many schema <code>:order/accounting-data</code> and <code>:order/product-unique-id</code> with <code>:db.unique/identity</code>. How to do upsert when we have <code>txes</code> like below?</p><pre><code>&#91;#:order{:io-writing-time #inst &quot;2019-04-01T02:39:00.000-00:00&quot;,
+         :service-category-enum :product.type/today,
+         :accounting-data
+         &#91;#:accounting{:month &quot;2019-04&quot;, :revenue -2}
+          #:accounting{:month &quot;2019-05&quot;, :revenue -3}
+          #:accounting{:month &quot;2019-02&quot;, :revenue 4}
+          #:accounting{:month &quot;2019-01&quot;, :revenue 5}&#93;}&#93;
+</code></pre><p>With a db transaction function <code>upsert-order</code>, we can simply write <code>txes</code> as</p><pre><code>  &#91;&#91;:fn/upsert-order
+    #:order{:io-writing-time #inst &quot;2019-04-01T02:39:00.000-00:00&quot;,
+            :service-category-enum :product.type/today,
+            :accounting-data
+            &#91;#:accounting{:month &quot;2019-04&quot;, :revenue -2}
+             #:accounting{:month &quot;2019-05&quot;, :revenue -3}
+             #:accounting{:month &quot;2019-02&quot;, :revenue 4}
+             #:accounting{:month &quot;2019-01&quot;, :revenue 5}&#93;}&#93;&#93;
+</code></pre> <p>The transaction function <code>:fn/upsert-order</code> handles the upsert complexity.</p><pre><code> {:db/id #db/id &#91;:db.part/user&#93;
+  :db/ident :fn/upsert-order
+  :db/doc &quot;The :order/accounting-data is cardinality many.
+  When insert semantic, transact `&#91;m&#93;`
+  When update semantic, do retraction of :order/accounting-data first and then transact `m`  &quot;
+  :db/fn #db/fn
+  {:lang :clojure
+   :params &#91;db m&#93;
+   :code &#40;if-let &#91;eid &#40;ffirst
+                      &#40;d/q '&#91;:find ?e
+                             :in $ ?u
+                             :where
+                             &#91;?e :order/product-unique-id ?u&#93;&#93;
+                           db &#40;:order/product-unique-id m&#41;&#41;&#41;&#93;
+           &#40;let &#91;ad-refs &#40;d/q '&#91;:find &#91;?a ...&#93;
+                                :in $ ?e
+                                :where &#91;?e :order/accounting-data ?a&#93;&#93;
+                              db eid&#41;
+                 retracts &#40;mapcat &#40;fn &#91;r&#93;  &#91;&#91;:db/retractEntity r&#93;
+                                            &#91;:db/retract eid :order/accounting-data r&#93;&#93;&#41; ad-refs&#41;&#93;
+             &#40;conj &#40;vec retracts&#41; m&#41;&#41;
+           &#91;m&#93;&#41;}}
+</code></pre><h2 id="conclusions">Conclusions</h2><p>From abstracting out idioms and patterns of ETL, I understand that context dependency is the primary cause of the complex application code. Both Datomic transaction functions and regular expression syntaxes of <code>clojure.spec</code> can help to remove the context dependency of our application code. Use them wisely!</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
+    
+    <a href="/tags-output/idiom">idiom</a>
+    
+    <a href="/tags-output/ETL">ETL</a>
+    
+    <a href="/tags-output/Excel">Excel</a>
+    
+    <a href="/tags-output/pattern">pattern</a>
+    
+    <a href="/tags-output/Datomic">Datomic</a>
+    
+</div>
+
+
+    <div id="prev-next">
+        
+        
+        <a class="right" href="/posts-output/first-consulting">Lessons learned from the software consulting job &raquo;</a>
+        
+    </div>
+
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://humorless.github.io/posts-output/etl";
+            this.page.identifier = "A Clojurian&#39;s idioms and patterns for ETL";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//humorless.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    
+
+
+</div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div id="sidebar">
+                <h3>Links</h3>
+                <ul id="links">
+                    <li><a href="http://cryogenweb.org/docs/home.html">Cryogen Docs</a></li>
+                    <li><a href="http://irongateinfo.blogspot.com/">程式人蔘</a></li>
+                    
+                </ul>
+                
+                <div id="recent">
+                    <h3>Recent Posts</h3>
+                    <ul>
+                        
+                        <li><a href="/posts-output/etl">A Clojurian&#39;s idioms and patterns for ETL</a></li>
+                        
+                        <li><a href="/posts-output/first-consulting">Lessons learned from the software consulting job</a></li>
+                        
+                        <li><a href="/posts-output/assembly">Using datomic with Luminus: Where to put our queries?</a></li>
+                        
+                        <li><a href="/posts-output/vagrant">Clojure development environment by Vagrant</a></li>
+                        
+                        <li><a href="/posts-output/datomic">Using Datomic in my app</a></li>
+                        
+                    </ul>
+                </div>
+                
+                
+                <div id="tags">
+                    <h3>Tags</h3>
+                    <ul>
+                        
+                        <li><a href="/tags-output/idiom">idiom</a></li>
+                        
+                        <li><a href="/tags-output/tips">tips</a></li>
+                        
+                        <li><a href="/tags-output/Luminus">Luminus</a></li>
+                        
+                        <li><a href="/tags-output/consulting">consulting</a></li>
+                        
+                        <li><a href="/tags-output/experience">experience</a></li>
+                        
+                        <li><a href="/tags-output/ansible">ansible</a></li>
+                        
+                        <li><a href="/tags-output/groupby">groupby</a></li>
+                        
+                        <li><a href="/tags-output/ETL">ETL</a></li>
+                        
+                        <li><a href="/tags-output/unit test">unit test</a></li>
+                        
+                        <li><a href="/tags-output/assembly">assembly</a></li>
+                        
+                        <li><a href="/tags-output/database">database</a></li>
+                        
+                        <li><a href="/tags-output/repl">repl</a></li>
+                        
+                        <li><a href="/tags-output/Excel">Excel</a></li>
+                        
+                        <li><a href="/tags-output/dependency-injection">dependency-injection</a></li>
+                        
+                        <li><a href="/tags-output/vim-fireplace">vim-fireplace</a></li>
+                        
+                        <li><a href="/tags-output/pattern">pattern</a></li>
+                        
+                        <li><a href="/tags-output/vagrant">vagrant</a></li>
+                        
+                        <li><a href="/tags-output/DevOps">DevOps</a></li>
+                        
+                        <li><a href="/tags-output/namespace">namespace</a></li>
+                        
+                        <li><a href="/tags-output/golang">golang</a></li>
+                        
+                        <li><a href="/tags-output/Datomic">Datomic</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <footer>Copyright &copy; 2019 Laurence Chen
+        <p style="text-align: center;">Powered by <a href="http://cryogenweb.org">Cryogen</a></p></footer>
+</div>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-135441027-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-135441027-1');
+</script>
+
+
+</body>
+</html>

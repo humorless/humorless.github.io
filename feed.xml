@@ -12,11 +12,140 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Mon, 24 Jun 2019 03:17:35 +0000
+Mon, 01 Jul 2019 04:49:13 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://humorless.github.io/posts-output/etl
+</guid>
+<link>
+https://humorless.github.io/posts-output/etl
+</link>
+<title>
+A Clojurian's idioms and patterns for ETL
+</title>
+<description>
+&lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;&lt;p&gt;I needed to do eight Excel ETLs at my project. At the beginning, I just implemented some of the ETLs without any design. I did not even implement schema validation, and then I felt the pain soon. After several re-writing, I abstracted out some idioms and patterns for ETL.&lt;/p&gt;&lt;h2 id=&quot;problems&quot;&gt;Problems&lt;/h2&gt;&lt;p&gt;We need to import data from several Excel files into Datomic database. There are several concerns with the ETL (extract-transform-load):&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Schema validation:   Can we have a validation function that we only need to inject the schema and then the validation function will handle all the rest for us? &lt;/li&gt;&lt;li&gt;Transformation complexity:   The transformation from Excel to Datomic table varies a lot. The simplest one is just copy data, but the complex ones need to look up tables in the database. How can we organize different type of transformation functions such that the functions can be more reusable and composable?&lt;/li&gt;&lt;li&gt;Database upsert semantic:   The identity key of the database table may be compound fields, or there may be some cardinality-many fields in the database table. That is to say, the basic upsert semantic offered by Datomic is not enough.&lt;/li&gt;&lt;/ol&gt;&lt;h3 id=&quot;solution&amp;#95;for&amp;#95;schema&amp;#95;validation&quot;&gt;Solution for schema validation&lt;/h3&gt;&lt;p&gt;The library &lt;code&gt;clojure.spec&lt;/code&gt; is great for schema validation. &lt;/p&gt;&lt;pre&gt;&lt;code&gt;;; library functions defined at utility namespace
+&amp;#40;defn check-raw-fn
+  &amp;quot;assemble schema and then create a validation fn&amp;quot;
+  &amp;#91;schema&amp;#93;
+  &amp;#40;fn check-raw
+    &amp;#91;data&amp;#93;
+    &amp;#40;if &amp;#40;spec/valid? schema data&amp;#41;
+      data
+      &amp;#40;let &amp;#91;desc &amp;#40;spec/explain-str schema data&amp;#41;&amp;#93;
+        &amp;#40;throw &amp;#40;ex-info desc {:causes data :desc desc}&amp;#41;&amp;#41;&amp;#41;&amp;#41;&amp;#41;&amp;#41;
+
+;; Example application functions
+&amp;#40;spec/def ::apply-time inst?&amp;#41;
+&amp;#40;spec/def ::customer-id string?&amp;#41;
+&amp;#40;spec/def ::lamp-customer-id string?&amp;#41;
+&amp;#40;spec/def ::sales-name string?&amp;#41;
+&amp;#40;spec/def ::source #{&amp;quot;agp&amp;quot; &amp;quot;lap&amp;quot;}&amp;#41;
+
+&amp;#40;spec/def ::mapping
+  &amp;#40;spec/&amp;#42; 
+    &amp;#40;spec/keys :req-un
+               &amp;#91;::apply-time ::customer-id ::lamp-customer-id ::sales-name ::source&amp;#93;&amp;#41;&amp;#41;&amp;#41;
+
+&amp;#40;def &amp;#94;:private check-raw
+  &amp;#40;utility/check-raw-fn ::mapping&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;In this design:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Even though I do not know how many rows an Excel file may have, I can still use &lt;code&gt;&amp;#40;spec/&amp;#42; ...&amp;#41;&lt;/code&gt; to represent the schema for the Excel file. If the spec does not offer the semantic like &lt;code&gt;&amp;#40;spec/&amp;#42; ...&amp;#41;&lt;/code&gt;, I have to write some loop logic in &lt;code&gt;check-raw-fn&lt;/code&gt; function, which causes the context dependency.&lt;/li&gt;&lt;li&gt;The spec names are just the same as the column names of Excel. Keep it simple making the program more robust.&lt;/li&gt;&lt;li&gt;If a string has only a few possible options, represent it in the form as &lt;code&gt;#{option1 option2 ...}&lt;/code&gt;&lt;/li&gt;&lt;li&gt;When throwing exception, I use &lt;code&gt;&amp;#40;ex-info ...&amp;#41;&lt;/code&gt; and I put the output of &lt;code&gt;&amp;#40;spec/explain-str ...&amp;#41;&lt;/code&gt; into an exception. Then, I can find out what is wrong by just reading the exception message. &lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Also, at the trigger API of ETL, the web API deliberately catches only certain types of Exception:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;try &amp;#40;if-let &amp;#91;r &amp;#40;etl/sync-data cmd filename&amp;#41;&amp;#93;
+            &amp;#40;ok {:result :insert-done}&amp;#41;
+            &amp;#40;ok {:result :already-sync}&amp;#41;&amp;#41;
+          &amp;#40;catch clojure.lang.ExceptionInfo e
+            &amp;#40;bad-request {:reason &amp;#40;ex-data e&amp;#41;}&amp;#41;&amp;#41;
+          &amp;#40;catch java.util.concurrent.ExecutionException e
+            &amp;#40;bad-request {:reason &amp;#40;.getCause e&amp;#41;}&amp;#41;&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The exception &lt;code&gt;clojure.lang.ExceptionInfo&lt;/code&gt; only catches the schema validation error thrown by my application code. The exception &lt;code&gt;java.util.concurrent.ExecutionException&lt;/code&gt; can catch the error from Datomic transaction. Other exceptions may happen with lower possibility, so I let them pass over and be recorded in log file.&lt;/p&gt;&lt;h3 id=&quot;solution&amp;#95;for&amp;#95;transformation&amp;#95;complexity&quot;&gt;Solution for transformation complexity&lt;/h3&gt;&lt;p&gt;I propose a pattern, which I call it as &lt;code&gt;let over map-merge&lt;/code&gt; to handle the transformation complexity.&lt;/p&gt;&lt;p&gt;Consider a transformation function &lt;code&gt;data-&amp;gt;txes&lt;/code&gt;, both the input and the output are sequences of map:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;The single map in the input data represents the row in the Excel file.&lt;/li&gt;&lt;li&gt;The single map in the output &lt;code&gt;txes&lt;/code&gt; represents the row in the Datomic table.&lt;/li&gt;&lt;/ul&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;defn- data-&amp;gt;txes
+  &amp;quot;data is a sequence of {HashMap}&amp;quot;
+  &amp;#91;data&amp;#93;
+  &amp;#40;let &amp;#91;db &amp;#40;d/db conn&amp;#41;
+        table &amp;#40;utility/tax-id-&amp;gt;c-eid db&amp;#41;&amp;#93;
+    &amp;#40;map #&amp;#40;transformation-f table %&amp;#41; data&amp;#41;&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can easily divide the transformation into two categories:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;Basic transformation: Just copy the field, or with pure function transformation.&lt;/li&gt;&lt;li&gt;Complex transformation: When transforming the input data, we need to also look up the database content.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;If we pull out &lt;code&gt;basic-mapping&lt;/code&gt; and &lt;code&gt;complex-mapping&lt;/code&gt; from &lt;code&gt;transformation-f&lt;/code&gt;, we can change the original code into&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;defn- data-&amp;gt;txes
+  &amp;#91;data&amp;#93;
+  &amp;#40;let &amp;#91;db &amp;#40;d/db conn&amp;#41;
+        table &amp;#40;utility/tax-id-&amp;gt;c-eid db&amp;#41;&amp;#93;
+    &amp;#40;let &amp;#91;basic-tx &amp;#40;map basic-mapping data&amp;#41;
+          complex-tx &amp;#40;map #&amp;#40;complex-mapping table %&amp;#41; data&amp;#41;&amp;#93;
+      &amp;#40;map merge basic-tx complex-tx&amp;#41;&amp;#41;&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With this &lt;code&gt;let over map-merge&lt;/code&gt; pattern, we can make the granularity of the transformation function smaller so as to make them more reusable and composable. In certain cases, basic-mapping only needs to change the key-name in the hash map, so we can use &lt;code&gt;clojure.set/rename-keys&lt;/code&gt; to implement the basic-mapping.&lt;/p&gt;&lt;h3 id=&quot;solution&amp;#95;for&amp;#95;database&amp;#95;upsert&amp;#95;semantic&quot;&gt;Solution for database upsert semantic&lt;/h3&gt;&lt;p&gt;In Datomic, we can use the &lt;code&gt;:db.unique/identity&lt;/code&gt; to make certain schema work like primary key in traditional RDBMS. &lt;/p&gt;&lt;h4 id=&quot;compound&amp;#95;primary&amp;#95;key&quot;&gt;Compound primary key&lt;/h4&gt;&lt;p&gt;Consider tha table with compound primary key as &lt;code&gt;stream-unique-id, writing-time, source&lt;/code&gt;. How to do upsert when we have &lt;code&gt;txes&lt;/code&gt; like below?&lt;/p&gt;&lt;pre&gt;&lt;code&gt; &amp;#91;#:rev-stream{:stream-unique-id &amp;quot;AA&amp;quot;
+               :writing-time #inst &amp;quot;2019-04-01T02:39:00.000-00:00&amp;quot;
+               :source :etl.source/agp
+               :campaign-name &amp;quot;BB&amp;quot;}&amp;#93;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With a db transaction function &lt;code&gt;upsert-rev-stream&lt;/code&gt;, we can simply write &lt;code&gt;txes&lt;/code&gt; as &lt;/p&gt;&lt;pre&gt;&lt;code&gt; &amp;#91;&amp;#91;:fn/upsert-rev-stream 
+   #:rev-stream{:stream-unique-id &amp;quot;AA
+                :writing-time #inst &amp;quot;2019-04-01T02:39:00.000-00:00&amp;quot;
+                :source :etl.source/agp
+                :campaign-name &amp;quot;BB&amp;quot;}&amp;#93;&amp;#93;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The transaction function &lt;code&gt;:fn/upsert-rev-stream&lt;/code&gt; handles the upsert complexity.&lt;/p&gt;&lt;pre&gt;&lt;code&gt; {:db/id #db/id &amp;#91;:db.part/user&amp;#93;
+  :db/ident :fn/upsert-rev-stream
+  :db/doc &amp;quot;The primary key of rev-stream is compound key&amp;quot;
+  :db/fn #db/fn
+  {:lang :clojure
+   :params &amp;#91;db m&amp;#93;
+   :code &amp;#40;if-let &amp;#91;id &amp;#40;ffirst
+                      &amp;#40;d/q '&amp;#91;:find ?e
+                             :in $ ?u ?t ?s
+                             :where
+                             &amp;#91;?e :rev-stream/stream-unique-id ?u&amp;#93;
+                             &amp;#91;?e :rev-stream/writing-time ?t&amp;#93;
+                             &amp;#91;?e :rev-stream/source ?s&amp;#93;&amp;#93;
+                           db &amp;#40;:rev-stream/stream-unique-id m&amp;#41;
+                           &amp;#40;:rev-stream/writing-time m&amp;#41;
+                           &amp;#40;:rev-stream/source m&amp;#41;&amp;#41;&amp;#41;&amp;#93;
+           &amp;#91;&amp;#40;-&amp;gt; &amp;#40;dissoc m :rev-stream/stream-unique-id
+                        :rev-stream/writing-time
+                        :rev-stream/source&amp;#41;
+                &amp;#40;assoc :db/id id&amp;#41;&amp;#41;&amp;#93;
+           &amp;#91;m&amp;#93;&amp;#41;}}
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;cardinality&amp;#95;many&quot;&gt;Cardinality many&lt;/h4&gt;&lt;p&gt;Consider tha table with a cardinality-many schema &lt;code&gt;:order/accounting-data&lt;/code&gt; and &lt;code&gt;:order/product-unique-id&lt;/code&gt; with &lt;code&gt;:db.unique/identity&lt;/code&gt;. How to do upsert when we have &lt;code&gt;txes&lt;/code&gt; like below?&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#91;#:order{:io-writing-time #inst &amp;quot;2019-04-01T02:39:00.000-00:00&amp;quot;,
+         :service-category-enum :product.type/today,
+         :accounting-data
+         &amp;#91;#:accounting{:month &amp;quot;2019-04&amp;quot;, :revenue -2}
+          #:accounting{:month &amp;quot;2019-05&amp;quot;, :revenue -3}
+          #:accounting{:month &amp;quot;2019-02&amp;quot;, :revenue 4}
+          #:accounting{:month &amp;quot;2019-01&amp;quot;, :revenue 5}&amp;#93;}&amp;#93;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With a db transaction function &lt;code&gt;upsert-order&lt;/code&gt;, we can simply write &lt;code&gt;txes&lt;/code&gt; as&lt;/p&gt;&lt;pre&gt;&lt;code&gt;  &amp;#91;&amp;#91;:fn/upsert-order
+    #:order{:io-writing-time #inst &amp;quot;2019-04-01T02:39:00.000-00:00&amp;quot;,
+            :service-category-enum :product.type/today,
+            :accounting-data
+            &amp;#91;#:accounting{:month &amp;quot;2019-04&amp;quot;, :revenue -2}
+             #:accounting{:month &amp;quot;2019-05&amp;quot;, :revenue -3}
+             #:accounting{:month &amp;quot;2019-02&amp;quot;, :revenue 4}
+             #:accounting{:month &amp;quot;2019-01&amp;quot;, :revenue 5}&amp;#93;}&amp;#93;&amp;#93;
+&lt;/code&gt;&lt;/pre&gt; &lt;p&gt;The transaction function &lt;code&gt;:fn/upsert-order&lt;/code&gt; handles the upsert complexity.&lt;/p&gt;&lt;pre&gt;&lt;code&gt; {:db/id #db/id &amp;#91;:db.part/user&amp;#93;
+  :db/ident :fn/upsert-order
+  :db/doc &amp;quot;The :order/accounting-data is cardinality many.
+  When insert semantic, transact `&amp;#91;m&amp;#93;`
+  When update semantic, do retraction of :order/accounting-data first and then transact `m`  &amp;quot;
+  :db/fn #db/fn
+  {:lang :clojure
+   :params &amp;#91;db m&amp;#93;
+   :code &amp;#40;if-let &amp;#91;eid &amp;#40;ffirst
+                      &amp;#40;d/q '&amp;#91;:find ?e
+                             :in $ ?u
+                             :where
+                             &amp;#91;?e :order/product-unique-id ?u&amp;#93;&amp;#93;
+                           db &amp;#40;:order/product-unique-id m&amp;#41;&amp;#41;&amp;#41;&amp;#93;
+           &amp;#40;let &amp;#91;ad-refs &amp;#40;d/q '&amp;#91;:find &amp;#91;?a ...&amp;#93;
+                                :in $ ?e
+                                :where &amp;#91;?e :order/accounting-data ?a&amp;#93;&amp;#93;
+                              db eid&amp;#41;
+                 retracts &amp;#40;mapcat &amp;#40;fn &amp;#91;r&amp;#93;  &amp;#91;&amp;#91;:db/retractEntity r&amp;#93;
+                                            &amp;#91;:db/retract eid :order/accounting-data r&amp;#93;&amp;#93;&amp;#41; ad-refs&amp;#41;&amp;#93;
+             &amp;#40;conj &amp;#40;vec retracts&amp;#41; m&amp;#41;&amp;#41;
+           &amp;#91;m&amp;#93;&amp;#41;}}
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;&lt;p&gt;From abstracting out idioms and patterns of ETL, I understand that context dependency is the primary cause of the complex application code. Both Datomic transaction functions and regular expression syntaxes of &lt;code&gt;clojure.spec&lt;/code&gt; can help to remove the context dependency of our application code. Use them wisely!&lt;/p&gt;
+</description>
+<pubDate>
+Mon, 01 Jul 2019 00:00:00 +0000
+</pubDate>
+</item>
 <item>
 <guid>
 https://humorless.github.io/posts-output/first-consulting
