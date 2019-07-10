@@ -60,7 +60,7 @@
     <h2>Using datomic with Luminus: Where to put our queries?</h2>
 </div>
 <div>
-    
+    <ol class="content"><li><a href="#where_to_put_the_db_queries_if_we_use_db_option_as_+datomic?">Where to put the db queries if we use db option as +datomic?</a></li><li><a href="#where_to_put_the_db_transactions?">Where to put the db transactions?</a></li><li><a href="#conclusion">Conclusion</a></li></ol>
     <p>If we build a Luminus project with db option other than datomic, for example <code>+postgres</code>, the code arrangement is much more straight forward. Open the file <code>resources/sql/queries.sql</code>, and put sql query and sql transaction command in this file. Then, we can just <code>require</code> the <code>xxx.db.core</code> namespace, the db queries or commands are totally available. </p><h2 id="where&#95;to&#95;put&#95;the&#95;db&#95;queries&#95;if&#95;we&#95;use&#95;db&#95;option&#95;as&#95;+datomic?">Where to put the db queries if we use db option as +datomic?</h2><p>Put datomic queries in the same file with connection state in <code>xxx.db.core</code> is the first attempt I tried. However, the datomic queries actually execute in the application program runtime, not in the db server runtime. Also, if we design the query function to accept datomic db value as input argument, then our query function will become pure functions.</p><p>After discovering that our query functions are pure functions, I decide to arrange my application namespaces like this:</p><pre><code>prj.&#91;service&#93;.assembly ---&gt; prj.db.core
                             ;; assembly only refers conn variable from prj.db.core
                        ---&gt; datomic.api

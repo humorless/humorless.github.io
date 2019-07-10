@@ -12,7 +12,7 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Wed, 10 Jul 2019 23:33:36 +0000
+Wed, 10 Jul 2019 23:51:29 +0000
 </lastBuildDate>
 <generator>
 clj-rss
@@ -60,7 +60,7 @@ A Clojurian's idioms and patterns for ETL
             &amp;#40;bad-request {:reason &amp;#40;ex-data e&amp;#41;}&amp;#41;&amp;#41;
           &amp;#40;catch java.util.concurrent.ExecutionException e
             &amp;#40;bad-request {:reason &amp;#40;.getCause e&amp;#41;}&amp;#41;&amp;#41;&amp;#41;
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The exception &lt;code&gt;clojure.lang.ExceptionInfo&lt;/code&gt; only catches the schema validation error thrown by my application code. The exception &lt;code&gt;java.util.concurrent.ExecutionException&lt;/code&gt; can catch the error from Datomic transaction. Other exceptions may happen with lower possibility, so I let them pass over and be recorded in log file.&lt;/p&gt;&lt;h3 id=&quot;solution&amp;#95;for&amp;#95;transformation&amp;#95;complexity&quot;&gt;Solution for transformation complexity&lt;/h3&gt;&lt;p&gt;I propose a pattern, which I call it as &lt;code&gt;let over map merge&lt;/code&gt; to handle the transformation complexity.&lt;/p&gt;&lt;p&gt;Consider a transformation function &lt;code&gt;data-&amp;gt;txes&lt;/code&gt;, both the input and the output are sequences of map:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;The single map in the input data represents the row in the Excel file.&lt;/li&gt;&lt;li&gt;The single map in the output &lt;code&gt;txes&lt;/code&gt; represents the row in the Datomic table.&lt;/li&gt;&lt;/ul&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;defn- data-&amp;gt;txes
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The exception &lt;code&gt;clojure.lang.ExceptionInfo&lt;/code&gt; only catches the schema validation error thrown by my application code. The exception &lt;code&gt;java.util.concurrent.ExecutionException&lt;/code&gt; can catch the error from Datomic transaction. Other exceptions may happen with lower possibility, so I let them pass over and be recorded in log file.&lt;/p&gt;&lt;h3 id=&quot;solution&amp;#95;for&amp;#95;transformation&amp;#95;complexity&amp;#95;&amp;mdash;&amp;#95;let&amp;#95;over&amp;#95;map&amp;#95;merge&quot;&gt;Solution for transformation complexity &amp;mdash; let over map merge&lt;/h3&gt;&lt;p&gt;I propose a pattern, which I call it as &lt;code&gt;let over map merge&lt;/code&gt; to handle the transformation complexity.&lt;/p&gt;&lt;p&gt;Consider a transformation function &lt;code&gt;data-&amp;gt;txes&lt;/code&gt;, both the input and the output are sequences of map:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;The single map in the input data represents the row in the Excel file.&lt;/li&gt;&lt;li&gt;The single map in the output &lt;code&gt;txes&lt;/code&gt; represents the row in the Datomic table.&lt;/li&gt;&lt;/ul&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;defn- data-&amp;gt;txes
   &amp;quot;data is a sequence of {HashMap}&amp;quot;
   &amp;#91;data&amp;#93;
   &amp;#40;let &amp;#91;db &amp;#40;d/db conn&amp;#41;
@@ -197,7 +197,7 @@ https://humorless.github.io/posts-output/vagrant
 Clojure development environment by Vagrant
 </title>
 <description>
-&lt;h2 id=&quot;tl;dr&quot;&gt;TL;DR&lt;/h2&gt;&lt;p&gt;If you want to have a portable Clojure development environment and you use Vagrant, vim-fireplace, you may consider to try my &lt;a href='https://github.com/humorless/dotfiles'&gt;Vagrantfile&lt;/a&gt;. &lt;/p&gt;&lt;pre&gt;&lt;code&gt;git clone https://github.com/humorless/dotfiles
+&lt;p&gt;If you want to have a portable Clojure development environment and you use Vagrant, vim-fireplace, you may consider to try my &lt;a href='https://github.com/humorless/dotfiles'&gt;Vagrantfile&lt;/a&gt;. &lt;/p&gt;&lt;pre&gt;&lt;code&gt;git clone https://github.com/humorless/dotfiles
 cd dotfiles
 vagrant up
 &lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;certain&amp;#95;part&amp;#95;of&amp;#95;vagrantfile&amp;#95;you&amp;#95;may&amp;#95;need&amp;#95;to&amp;#95;remove.&quot;&gt;Certain part of vagrantfile you may need to remove.&lt;/h2&gt;&lt;pre&gt;&lt;code class=&quot;ruby&quot;&gt;if Vagrant.has&amp;#95;plugin?&amp;#40;&amp;quot;vagrant-timezone&amp;quot;&amp;#41;
