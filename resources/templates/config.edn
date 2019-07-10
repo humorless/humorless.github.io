@@ -1,4 +1,4 @@
-{:site-title           "Full Stack Clojure (全棧閉包)"
+{:site-title           "Let over map merge"
  :author               "Laurence Chen"
  :description          "This personal blog describes about the ideas around Clojure/ClojureScript/Datomic"
  :site-url             "https://humorless.github.io/"

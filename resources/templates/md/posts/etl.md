@@ -2,7 +2,7 @@
  :title "A Clojurian's idioms and patterns for ETL"
  :layout :post
  :date "2019-07-01"
- :tags ["idiom", "pattern", "ETL", "Excel", "Datomic"]
+ :tags ["idiom", "pattern", "let over map merge", "ETL", "Excel", "Datomic"]
 }
 
 ## Background
@@ -72,7 +72,7 @@ The exception `clojure.lang.ExceptionInfo` only catches the schema validation er
 
 ### Solution for transformation complexity
 
-I propose a pattern, which I call it as `let over map-merge` to handle the transformation complexity.
+I propose a pattern, which I call it as `let over map merge` to handle the transformation complexity.
 
 Consider a transformation function `data->txes`, both the input and the output are sequences of map:
 - The single map in the input data represents the row in the Excel file.
