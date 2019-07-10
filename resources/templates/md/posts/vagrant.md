@@ -1,9 +1,9 @@
 {:title "Clojure development environment by Vagrant"
  :layout :post
  :date "2019-05-13"
- :tags [ "DevOps", "vagrant", "vim-fireplace", "ansible"]}
+ :tags [ "DevOps", "vagrant", "vim-fireplace", "ansible"]
+}
 
-## TL;DR
 If you want to have a portable Clojure development environment and you use Vagrant, vim-fireplace, you may consider to try my [Vagrantfile](https://github.com/humorless/dotfiles). 
 
 ```

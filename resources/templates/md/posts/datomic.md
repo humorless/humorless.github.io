@@ -1,7 +1,8 @@
 {:title "Using Datomic in my app"
  :layout :post
  :date "2019-04-27"
- :tags [ "Datomic", "tips", "experience"]}
+ :tags [ "Datomic", "tips", "experience"]
+ :toc true}
 
 ## The background of this post
 I began to use Datomic seriously in my project at work from February 2019. Now, it is time to write down certain experience. When I just began, I found a lot of documents talking about how to use Datomic. However, I still found certain points worth to mention from my project.

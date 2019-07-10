@@ -3,6 +3,7 @@
  :layout :post
  :date "2019-07-01"
  :tags ["idiom", "pattern", "let over map merge", "ETL", "Excel", "Datomic"]
+ :toc true
 }
 
 ## Background
@@ -70,7 +71,7 @@ Also, at the trigger API of ETL, the web API deliberately catches only certain t
 
 The exception `clojure.lang.ExceptionInfo` only catches the schema validation error thrown by my application code. The exception `java.util.concurrent.ExecutionException` can catch the error from Datomic transaction. Other exceptions may happen with lower possibility, so I let them pass over and be recorded in log file.
 
-### Solution for transformation complexity
+### Solution for transformation complexity --- let over map merge
 
 I propose a pattern, which I call it as `let over map merge` to handle the transformation complexity.
 

@@ -2,6 +2,7 @@
  :layout :post
  :date "2019-06-12"
  :tags ["Datomic", "assembly", "namespace", "Luminus"]
+ :toc true
 }
 
 If we build a Luminus project with db option other than datomic, for example `+postgres`, the code arrangement is much more straight forward. Open the file `resources/sql/queries.sql`, and put sql query and sql transaction command in this file. Then, we can just `require` the `xxx.db.core` namespace, the db queries or commands are totally available. 
