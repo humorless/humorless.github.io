@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Let over map merge: About</title>
-    <link rel="canonical" href="https://humorless.github.io/pages-output/about">
+    <title>Let over map merge: Using Datomic with disk cache and LU cache</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/datomic-cache">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -33,7 +33,7 @@
                 ><a href="/archives">Archives</a></li>
                 
                 <li
-                 class="active" >
+                >
                 <a href="/pages-output/about">About</a>
                 </li>
                 
@@ -51,18 +51,86 @@
         <div class="col-lg-9">
             <div id="content">
                 
-<div id="custom-page">
-    <div id="page-header">
-        <h2>About</h2>
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">September 15, 2019</div>
+        
     </div>
+    <h2>Using Datomic with disk cache and LU cache</h2>
+</div>
+<div>
+    <ol class="content"><li><a href="#the_background_of_this_post">The background of this post</a></li><li><a href="#analytical_queries_need_pre-computation">Analytical queries need pre-computation</a></li><li><a href="#using_datomic_as_key-value_store">Using Datomic as key-value store</a></li><li><a href="#outofmemory_error_occurred">OutOfMemory Error occurred</a></li><li><a href="#extract_not-join_out_of_query_and_use_lu-cached_memoize">Extract not-join out of query and use LU-cached memoize</a></li></ol>
+    <h2 id="the&#95;background&#95;of&#95;this&#95;post">The background of this post</h2><p>I began to use Datomic seriously in my project at work from February 2019. I encountered certain performance issues and I solved them through disk cache and LU cache.</p><h2 id="analytical&#95;queries&#95;need&#95;pre-computation">Analytical queries need pre-computation</h2><p>My project had several analytical queries which implemented the business rules. With Datomic expressive query power, it was very easy to implement queries that closely related to domain model. Great for expressiveness, but the query speed was quite slow, I needed to do some pre-computation.<br /></p><p>How to save the query results? My query results were in the form of EDN format. Should I prepare a key-value database to cache it? Or, should I use just Datomic to serve as the key-value database?</p><h2 id="using&#95;datomic&#95;as&#95;key-value&#95;store">Using Datomic as key-value store</h2><p>In my use cases, I used Datomic as key-value store with the following schema.</p><pre><code>| schema name | :booking/tx  | :booking/team      | :booking/bytes |
+|-------------|--------------|--------------------|----------------|
+| data type   | long         |  string            |  bytes         |
+
+</code></pre><p>The <code>:booking/tx</code> and <code>:booking/team</code> served as keys and <code>:booking/bytes</code> served as value. Before I stored the EDN format value into <code>:booking/bytes</code>, I first required a smart library: <a href='https://github.com/ptaoussanis/nippy'>Nippy</a>. Nippy helped to transform Clojure composite data structure into plain Java bytes.</p><p>Here came another question: Was there any size limit with the Datomic schema type: <code>db.type/bytes</code>? I spent some time to find the answer in Datomic google group.</p><blockquote><p> I believe the rule of thumb is that values stored in Datomic — strings, bytes, etc. — should not exceed one kilobyte. Nothing will break if they do, but Datomic's storage layout is optimized for values this size or smaller. </p></blockquote><p>Great! Nothing will break if they do.</p><h2 id="outofmemory&#95;error&#95;occurred">OutOfMemory Error occurred</h2><p>Some of my queries used <code>not-join</code> syntaxes. At the beginning, <code>not-join</code> looked like great things because with <code>not-join</code> I could express my intent without any low level interpretation. Soonly, the queries with <code>not-join</code> threw an <code>OutOfMemory</code> error. Therefore, I decided to do some optimizations.</p><h2 id="extract&#95;not-join&#95;out&#95;of&#95;query&#95;and&#95;use&#95;lu-cached&#95;memoize">Extract not-join out of query and use LU-cached memoize</h2><p>The original query was like this:</p><pre><code>&#40;d/q '&#91;:find &#40;count ?r&#41; .
+       :where &#91;?r :release/name &quot;Live at Carnegie Hall&quot;&#93;
+              &#40;not-join &#91;?r&#93;
+                &#91;?r :release/artists ?a&#93;
+                &#91;?a :artist/name &quot;Bill Withers&quot;&#93;&#41;&#93;
+       db&#41;
+</code></pre><p>The modified equivalent queries were:</p><pre><code>&#40;def B &#40;into #{}
+             &#40;d/q '&#91;:find ?r
+                    :where &#91;?r :release/artist ?a&#93;
+                           &#91;?a :artist/name &quot;Bill Withers&quot;&#93;&#93;
+                    db&#41;&#41;&#41;
+
+&#40;d/q '&#91;:find &#40;count ?r&#41; .
+       :in $a $b
+       :where
+       &#91;$a ?r :release/name &quot;Live at Carnegie Hall&quot;&#93;
+       &#40;$b not &#91;?r&#93;&#41;&#93;
+     db B&#41;
+</code></pre><p>After I extracted <code>not-join</code> part out of the original query, I discovered that some of my new query would be called with similar inputs across several queries. It would save some computation resources if I used <code>memoize</code> to modify the new query.</p><p>However, the standard version <code>clojure.core/memoize</code> would cause memory leak. I chose the Clojure contrib library <a href='https://github.com/clojure/core.memoize'>core.memoize</a> to cache the query result with LU cache.</p><p>The to be memoized query functions were like this:</p><pre><code>&#40;defn memo-q&#42;
+  &#91;db t&#93;
+  &#40;into #{}
+        &#40;d/q '&#91;:find ?r
+               :where &#91;?r :release/artist ?a&#93;
+                      &#91;?a :artist/name &quot;Bill Withers&quot;&#93;&#93;
+             db&#41;&#41;&#41;
+
+&#40;def memo-q &#40;clojure.core.memoize/lu memo-q&#42; {} :lu/threshold 2&#41;&#41;
+</code></pre><p>The memoized query function was called like this:</p><pre><code>&#40;memo-q db &#40;d/basis-t db&#41;&#41;
+</code></pre><p>The Datomic t of the most recent transaction reachable via the db value served as the input parameter to decide whether the cached result was out of date.</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
     
-    <p>這個 blog 主要用來記錄個人研究 Clojure 相關技術的心得，包含但不限於 <code>Clojure</code>/<code>ClojureScript</code>/<code>Datomic</code></p><h3 id="contact">Contact</h3><ul><li><a href='https://github.com/humorless'>Github</a></li><li><a href='https://twitter.com/humorless'>Twitter</a></li><li><a href='https://linkedin.com/in/humorless'>LinkedIn</a></li></ul>
+    <a href="/tags-output/tips">tips</a>
+    
+    <a href="/tags-output/performance">performance</a>
+    
+    <a href="/tags-output/Datomic">Datomic</a>
+    
+</div>
+
 
     <div id="prev-next">
         
         
+        <a class="right" href="/posts-output/etl">A Clojurian&#39;s idioms and patterns for ETL &raquo;</a>
         
     </div>
+
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://humorless.github.io/posts-output/datomic-cache";
+            this.page.identifier = "Using Datomic with disk cache and LU cache";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//humorless.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    
+
+
 </div>
 
             </div>

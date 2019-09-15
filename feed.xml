@@ -12,11 +12,60 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Fri, 09 Aug 2019 16:17:58 +0000
+Sun, 15 Sep 2019 12:25:11 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://humorless.github.io/posts-output/datomic-cache
+</guid>
+<link>
+https://humorless.github.io/posts-output/datomic-cache
+</link>
+<title>
+Using Datomic with disk cache and LU cache
+</title>
+<description>
+&lt;h2 id=&quot;the&amp;#95;background&amp;#95;of&amp;#95;this&amp;#95;post&quot;&gt;The background of this post&lt;/h2&gt;&lt;p&gt;I began to use Datomic seriously in my project at work from February 2019. I encountered certain performance issues and I solved them through disk cache and LU cache.&lt;/p&gt;&lt;h2 id=&quot;analytical&amp;#95;queries&amp;#95;need&amp;#95;pre-computation&quot;&gt;Analytical queries need pre-computation&lt;/h2&gt;&lt;p&gt;My project had several analytical queries which implemented the business rules. With Datomic expressive query power, it was very easy to implement queries that closely related to domain model. Great for expressiveness, but the query speed was quite slow, I needed to do some pre-computation.&lt;br /&gt;&lt;/p&gt;&lt;p&gt;How to save the query results? My query results were in the form of EDN format. Should I prepare a key-value database to cache it? Or, should I use just Datomic to serve as the key-value database?&lt;/p&gt;&lt;h2 id=&quot;using&amp;#95;datomic&amp;#95;as&amp;#95;key-value&amp;#95;store&quot;&gt;Using Datomic as key-value store&lt;/h2&gt;&lt;p&gt;In my use cases, I used Datomic as key-value store with the following schema.&lt;/p&gt;&lt;pre&gt;&lt;code&gt;| schema name | :booking/tx  | :booking/team      | :booking/bytes |
+|-------------|--------------|--------------------|----------------|
+| data type   | long         |  string            |  bytes         |
+
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The &lt;code&gt;:booking/tx&lt;/code&gt; and &lt;code&gt;:booking/team&lt;/code&gt; served as keys and &lt;code&gt;:booking/bytes&lt;/code&gt; served as value. Before I stored the EDN format value into &lt;code&gt;:booking/bytes&lt;/code&gt;, I first required a smart library: &lt;a href='https://github.com/ptaoussanis/nippy'&gt;Nippy&lt;/a&gt;. Nippy helped to transform Clojure composite data structure into plain Java bytes.&lt;/p&gt;&lt;p&gt;Here came another question: Was there any size limit with the Datomic schema type: &lt;code&gt;db.type/bytes&lt;/code&gt;? I spent some time to find the answer in Datomic google group.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt; I believe the rule of thumb is that values stored in Datomic — strings, bytes, etc. — should not exceed one kilobyte. Nothing will break if they do, but Datomic's storage layout is optimized for values this size or smaller. &lt;/p&gt;&lt;/blockquote&gt;&lt;p&gt;Great! Nothing will break if they do.&lt;/p&gt;&lt;h2 id=&quot;outofmemory&amp;#95;error&amp;#95;occurred&quot;&gt;OutOfMemory Error occurred&lt;/h2&gt;&lt;p&gt;Some of my queries used &lt;code&gt;not-join&lt;/code&gt; syntaxes. At the beginning, &lt;code&gt;not-join&lt;/code&gt; looked like great things because with &lt;code&gt;not-join&lt;/code&gt; I could express my intent without any low level interpretation. Soonly, the queries with &lt;code&gt;not-join&lt;/code&gt; threw an &lt;code&gt;OutOfMemory&lt;/code&gt; error. Therefore, I decided to do some optimizations.&lt;/p&gt;&lt;h2 id=&quot;extract&amp;#95;not-join&amp;#95;out&amp;#95;of&amp;#95;query&amp;#95;and&amp;#95;use&amp;#95;lu-cached&amp;#95;memoize&quot;&gt;Extract not-join out of query and use LU-cached memoize&lt;/h2&gt;&lt;p&gt;The original query was like this:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;d/q '&amp;#91;:find &amp;#40;count ?r&amp;#41; .
+       :where &amp;#91;?r :release/name &amp;quot;Live at Carnegie Hall&amp;quot;&amp;#93;
+              &amp;#40;not-join &amp;#91;?r&amp;#93;
+                &amp;#91;?r :release/artists ?a&amp;#93;
+                &amp;#91;?a :artist/name &amp;quot;Bill Withers&amp;quot;&amp;#93;&amp;#41;&amp;#93;
+       db&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The modified equivalent queries were:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;def B &amp;#40;into #{}
+             &amp;#40;d/q '&amp;#91;:find ?r
+                    :where &amp;#91;?r :release/artist ?a&amp;#93;
+                           &amp;#91;?a :artist/name &amp;quot;Bill Withers&amp;quot;&amp;#93;&amp;#93;
+                    db&amp;#41;&amp;#41;&amp;#41;
+
+&amp;#40;d/q '&amp;#91;:find &amp;#40;count ?r&amp;#41; .
+       :in $a $b
+       :where
+       &amp;#91;$a ?r :release/name &amp;quot;Live at Carnegie Hall&amp;quot;&amp;#93;
+       &amp;#40;$b not &amp;#91;?r&amp;#93;&amp;#41;&amp;#93;
+     db B&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;After I extracted &lt;code&gt;not-join&lt;/code&gt; part out of the original query, I discovered that some of my new query would be called with similar inputs across several queries. It would save some computation resources if I used &lt;code&gt;memoize&lt;/code&gt; to modify the new query.&lt;/p&gt;&lt;p&gt;However, the standard version &lt;code&gt;clojure.core/memoize&lt;/code&gt; would cause memory leak. I chose the Clojure contrib library &lt;a href='https://github.com/clojure/core.memoize'&gt;core.memoize&lt;/a&gt; to cache the query result with LU cache.&lt;/p&gt;&lt;p&gt;The to be memoized query functions were like this:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;defn memo-q&amp;#42;
+  &amp;#91;db t&amp;#93;
+  &amp;#40;into #{}
+        &amp;#40;d/q '&amp;#91;:find ?r
+               :where &amp;#91;?r :release/artist ?a&amp;#93;
+                      &amp;#91;?a :artist/name &amp;quot;Bill Withers&amp;quot;&amp;#93;&amp;#93;
+             db&amp;#41;&amp;#41;&amp;#41;
+
+&amp;#40;def memo-q &amp;#40;clojure.core.memoize/lu memo-q&amp;#42; {} :lu/threshold 2&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The memoized query function was called like this:&lt;/p&gt;&lt;pre&gt;&lt;code&gt;&amp;#40;memo-q db &amp;#40;d/basis-t db&amp;#41;&amp;#41;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;The Datomic t of the most recent transaction reachable via the db value served as the input parameter to decide whether the cached result was out of date.&lt;/p&gt;
+</description>
+<pubDate>
+Sun, 15 Sep 2019 00:00:00 +0000
+</pubDate>
+</item>
 <item>
 <guid>
 https://humorless.github.io/posts-output/etl
