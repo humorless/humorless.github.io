@@ -6,7 +6,7 @@
  :toc true
 }
 
-I live in Taiwan and I can not find Clojure jobs here. Although the first legal gay wedding in Asia took place here, it seems that the real programming language innovation still needs some evangelists to spread it. Therefore, I decide to create Clojure job by myself. In January this year, I had a chance to develop enterprise software for the LINE Taiwan, and I chose Clojure as my primary technical stack.
+I live in Taiwan and I can not find Clojure jobs here. Although the first legal gay wedding in Asia took place here, it seems that the real programming language innovation still needs some evangelists to spread it. Therefore, I decide to create Clojure job by myself. In January this year, I had a chance to develop enterprise software for a big company, and I chose Clojure as my primary technical stack.
 
 ## Technical stack issues
 
@@ -16,9 +16,9 @@ After developing this project for a while, I regretted that I did not insist on 
 
 ## A very simple user login is good enough for a small group of users
 
-The enterprise software solution needed to be an on-premise solution, installed on the private network at LINE offices. There would be about 30 users login everyday. At the beginning, I thought three different ways to solve the user login problems:
+The enterprise software solution needed to be an on-premise solution, installed on the private network at company offices. There would be about 30 users login everyday. At the beginning, I thought three different ways to solve the user login problems:
 
-1. Single signed-on with other enterprise software in LINE
+1. Single signed-on with other enterprise software already existed
 2. Leverage third party authorization service
 3. Traditional user login backend APIs and frontend UI with login/register/user management functions like resetting password.
 
@@ -51,7 +51,7 @@ My improved version:
 
 I was not an expert of DevOps. When I needed to deploy the project, I took some time to study ansible because the great book `Deploying Your First Clojure App ...From the Shadows shows` introduced ansible. I still felt ansible is a great tool worth learning, however, the target servers were under the bastion host.
 
-Engineers in LINE Taiwan told me that they installed a Drone CI/CD server in the virtual private network behind the bastion host. As a Clojure developer, I decided to use LambdaCD. Actually, it was even simpler than Drone. Parentheses abundant lisp clj files were more expressive than yaml files.
+Engineers in the same company told me that they installed a Drone CI/CD server in the virtual private network behind the bastion host. As a Clojure developer, I decided to use LambdaCD. Actually, it was even simpler than Drone. Parentheses abundant lisp clj files were more expressive than yaml files.
 
 When I encountered problems, I asked questions at LambdaCD github repo. Within two days, the author of LambdaCD kindly replied my questions. I thought LambdaCD is worth of recommendation, both the quality of the software and quick response.
 
