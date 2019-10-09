@@ -12,11 +12,28 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Wed, 18 Sep 2019 05:45:00 +0000
+Wed, 09 Oct 2019 05:47:20 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://humorless.github.io/posts-output/economics
+</guid>
+<link>
+https://humorless.github.io/posts-output/economics
+</link>
+<title>
+Behavioral Economics and Clojure
+</title>
+<description>
+&lt;h2 id=&quot;situation&amp;#95;1&quot;&gt;Situation 1&lt;/h2&gt;&lt;p&gt;When I take the ownership of a new project, I tell my boss that I want to use Clojure/ClojureScript/Datomic. I promise to deliver good quality with only one third of development time required for using other popular/ordinary technology. My boss usually asks me: &quot;How about the long term maintenance problem? How can I find many Clojure developers?&quot;&lt;/p&gt;&lt;p&gt;If I do not insist, my boss will choose mundane technology because she really cares about &quot;long-term benefits&quot;.&lt;/p&gt;&lt;h2 id=&quot;situation&amp;#95;2&quot;&gt;Situation 2&lt;/h2&gt;&lt;p&gt;The software is delivered. However, one day my boss needs certain feature and she even wants to talk directly to me because she wants it so urgently. I provide two options:&lt;/p&gt;&lt;ol&gt;&lt;li&gt;The canonical solution, which takes 2 months to implement.&lt;/li&gt;&lt;li&gt;The workaround solution, which takes 3 days, but may have security issues.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;This time, my boss tends to choose the workaround one because &quot;In the long run, we are all dead.&quot;&lt;/p&gt;&lt;h2 id=&quot;loss&amp;#95;and&amp;#95;gain&quot;&gt;Loss and Gain&lt;/h2&gt;&lt;p&gt;There is a very interesting question here. Why in the situation 1, my boss cares about &quot;long-term benefits&quot; more, but in the situation 2, my boss asks for short-term interests? &lt;/p&gt;&lt;p&gt;I would like to use the framework of Behavioral Economics to explain this. For situation 1, my boss treats the long-term difficulties in finding Clojure developers as &quot;loss&quot;, and she treats the short development time as &quot;gain&quot;. For situation 2, my boss treats any waiting as &quot;loss&quot;, and good software quality as &quot;gain&quot;. For humans, loss is 3 times more powerful to gain. As for which is a loss and which is a gain, it depends on the reference point. &lt;/p&gt;&lt;p&gt;The interesting thing is that the reference point is drifting and when people cannot decide the reference point through their own experience, they just take the &quot;average opinion&quot; as the reference point. &lt;/p&gt;&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;&lt;p&gt;The critical part of educating customers is really about changing the reference point that the customers originally hold subconsciously.&lt;/p&gt;
+</description>
+<pubDate>
+Wed, 09 Oct 2019 00:00:00 +0000
+</pubDate>
+</item>
 <item>
 <guid>
 https://humorless.github.io/posts-output/datomic-cache
