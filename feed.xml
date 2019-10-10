@@ -12,7 +12,7 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Wed, 09 Oct 2019 05:47:20 +0000
+Thu, 10 Oct 2019 08:38:46 +0000
 </lastBuildDate>
 <generator>
 clj-rss
@@ -343,7 +343,7 @@ https://humorless.github.io/posts-output/REPL
 REPL tips
 </title>
 <description>
-&lt;p&gt;從今年 2 月開始，接了一個公司內部應用軟體的專案開發，我用 clojure + luminus + datomic 來實作。不知不覺也就每天寫 clojure 的 REPL 近兩個月了。每天玩 REPL 之後，很快就發現一些過去我用 REPL 的盲點。&lt;/p&gt;&lt;h3 id=&quot;沒有善用&amp;#95;&lt;code&gt;clojure.repl/pprint&lt;/code&gt;&quot;&gt;沒有善用 &lt;code&gt;clojure.repl/pprint&lt;/code&gt;&lt;/h3&gt;&lt;p&gt;  沒有善用的主要原因，自然是因為在 &lt;code&gt;fireplace.vim&lt;/code&gt; 的環境下，一開始我沒有特別做一些設定時，直接做 cpp, cqp 之類 REPL 操作，並不會有 pretty print 的輸出。後來，我總算是下定決心，把 &lt;a href='https://github.com/humorless/dotfiles/blob/master/profiles.clj'&gt;leiningen profiles&lt;/a&gt; 設定好，加入了一個叫 &lt;code&gt;vinyasa&lt;/code&gt; 的 leiningen dependency&lt;/p&gt;&lt;p&gt;  設定好之後，就可以用 &lt;code&gt;&amp;#40;&amp;gt;pprint ...&amp;#41;&lt;/code&gt; 來做 pretty print 。&lt;/p&gt;&lt;h3 id=&quot;沒有善用&amp;#95;&lt;code&gt;&amp;#42;1&lt;/code&gt;&amp;#95;&lt;code&gt;&amp;#42;2&lt;/code&gt;&quot;&gt;沒有善用 &lt;code&gt;&amp;#42;1&lt;/code&gt; &lt;code&gt;&amp;#42;2&lt;/code&gt;&lt;/h3&gt;&lt;p&gt;  過去，我在做 REPL 操作時，常常做的事情是這樣子：&lt;/p&gt;&lt;p&gt;  &lt;code&gt;&amp;#40;f1 a b c&amp;#41;&lt;/code&gt; =&gt; 試到結果正確&lt;/p&gt;&lt;p&gt;  &lt;code&gt;&amp;#40;f2 &amp;#40;f1 a b c&amp;#41; d&amp;#41;&lt;/code&gt; =&gt; 也是試到結果也正確&lt;/p&gt;&lt;p&gt;  &lt;code&gt;&amp;#40;f3 &amp;#40;f2 &amp;#40;f1 a b c&amp;#41; d&amp;#41; e&amp;#41;&lt;/code&gt; =&gt; 然後指令就愈來愈長, 愈來愈難下&lt;/p&gt;&lt;p&gt;  其實不用這樣子麻煩，第二次可以這樣子下指令 &lt;code&gt;&amp;#40;f2 &amp;#42;1 d&amp;#41;&lt;/code&gt; 。&lt;/p&gt;
+&lt;p&gt;從今年 2 月開始，接了一個公司內部應用軟體的專案開發，我用 clojure + luminus + datomic 來實作。不知不覺也就每天寫 clojure 的 REPL 近兩個月了。每天玩 REPL 之後，很快就發現一些過去我用 REPL 的盲點。&lt;/p&gt;&lt;h3 id=&quot;沒有善用&amp;#95;&lt;code&gt;clojure.repl/pprint&lt;/code&gt;&quot;&gt;沒有善用 &lt;code&gt;clojure.repl/pprint&lt;/code&gt;&lt;/h3&gt;&lt;p&gt;  沒有善用的主要原因，自然是因為在 &lt;code&gt;fireplace.vim&lt;/code&gt; 的環境下，一開始我沒有特別做一些設定時，直接做 cpp, cqp 之類 REPL 操作，並不會有 pretty print 的輸出。後來，我總算是下定決心，把 &lt;a href='https://github.com/humorless/dotfiles/blob/master/lein/profiles.clj'&gt;leiningen profiles&lt;/a&gt; 設定好，加入了一個叫 &lt;code&gt;vinyasa&lt;/code&gt; 的 leiningen dependency&lt;/p&gt;&lt;p&gt;  設定好之後，就可以用 &lt;code&gt;&amp;#40;&amp;gt;pprint ...&amp;#41;&lt;/code&gt; 來做 pretty print 。&lt;/p&gt;&lt;h3 id=&quot;沒有善用&amp;#95;&lt;code&gt;&amp;#42;1&lt;/code&gt;&amp;#95;&lt;code&gt;&amp;#42;2&lt;/code&gt;&quot;&gt;沒有善用 &lt;code&gt;&amp;#42;1&lt;/code&gt; &lt;code&gt;&amp;#42;2&lt;/code&gt;&lt;/h3&gt;&lt;p&gt;  過去，我在做 REPL 操作時，常常做的事情是這樣子：&lt;/p&gt;&lt;p&gt;  &lt;code&gt;&amp;#40;f1 a b c&amp;#41;&lt;/code&gt; =&gt; 試到結果正確&lt;/p&gt;&lt;p&gt;  &lt;code&gt;&amp;#40;f2 &amp;#40;f1 a b c&amp;#41; d&amp;#41;&lt;/code&gt; =&gt; 也是試到結果也正確&lt;/p&gt;&lt;p&gt;  &lt;code&gt;&amp;#40;f3 &amp;#40;f2 &amp;#40;f1 a b c&amp;#41; d&amp;#41; e&amp;#41;&lt;/code&gt; =&gt; 然後指令就愈來愈長, 愈來愈難下&lt;/p&gt;&lt;p&gt;  其實不用這樣子麻煩，第二次可以這樣子下指令 &lt;code&gt;&amp;#40;f2 &amp;#42;1 d&amp;#41;&lt;/code&gt; 。&lt;/p&gt;
 </description>
 <pubDate>
 Sat, 30 Mar 2019 00:00:00 +0000
