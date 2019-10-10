@@ -7,7 +7,7 @@
 
 ### 沒有善用 `clojure.repl/pprint`
 
-  沒有善用的主要原因，自然是因為在 `fireplace.vim` 的環境下，一開始我沒有特別做一些設定時，直接做 cpp, cqp 之類 REPL 操作，並不會有 pretty print 的輸出。後來，我總算是下定決心，把 [leiningen profiles](https://github.com/humorless/dotfiles/blob/master/profiles.clj) 設定好，加入了一個叫 `vinyasa` 的 leiningen dependency
+  沒有善用的主要原因，自然是因為在 `fireplace.vim` 的環境下，一開始我沒有特別做一些設定時，直接做 cpp, cqp 之類 REPL 操作，並不會有 pretty print 的輸出。後來，我總算是下定決心，把 [leiningen profiles](https://github.com/humorless/dotfiles/blob/master/lein/profiles.clj) 設定好，加入了一個叫 `vinyasa` 的 leiningen dependency
 
   設定好之後，就可以用 `(>pprint ...)` 來做 pretty print 。
 
