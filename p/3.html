@@ -54,6 +54,23 @@
 <div id="post">
     
     <div class="post-header">
+        <h2>groupby</h2>
+        <div id="post-meta">
+            
+            <div class="date">May 21, 2017</div>
+        </div>
+    </div>
+    <p>一開始是我在寫 <a href="http://www.4clojure.com/problem/63">4clojure</a> 的練習題的時候，寫到了一個題目，要重新實現 clojure 語言的 groupby 函數。我糾結了好一陣子，又查了不少資料，才勉強用 reduce 寫出來。然而，最近卻在工作中，用上了 groupby 。</p><pre><code class="clojure">(fn f [k coll]
+  (reduce
+    (fn [c v]
+      (update-in c [(k v)] (fnil conj []) v))
+    {} coll))
+
+</code></pre>
+    <a href="/posts-output/groupby">Continue reading &#8594;</a>
+    <hr>
+    
+    <div class="post-header">
         <h2>pattern</h2>
         <div id="post-meta">
             
@@ -80,14 +97,16 @@
             <div id="sidebar">
                 <h3>Links</h3>
                 <ul id="links">
-                    <li><a href="https://replware.dev">REPLware</a></li>
-                    <li><a href="https://medium.com/@replware">REPLware blog (Chinese)</a></li>
+                    <li><a href="https://replware.dev">REPLWARE</a></li>
+                    <li><a href="https://medium.com/@replware">REPLWARE blog (Chinese)</a></li>
                     
                 </ul>
                 
                 <div id="recent">
                     <h3>Recent Posts</h3>
                     <ul>
+                        
+                        <li><a href="/posts-output/tutoring-class">Teaching Clojure programming class</a></li>
                         
                         <li><a href="/posts-output/economics">Behavioral Economics and Clojure</a></li>
                         
@@ -96,8 +115,6 @@
                         <li><a href="/posts-output/etl">A Clojurian&#39;s idioms and patterns for ETL</a></li>
                         
                         <li><a href="/posts-output/first-consulting">Lessons learned from the software consulting job</a></li>
-                        
-                        <li><a href="/posts-output/assembly">Using datomic with Luminus: Where to put our queries?</a></li>
                         
                     </ul>
                 </div>
@@ -147,7 +164,11 @@
                         
                         <li><a href="/tags-output/vagrant">vagrant</a></li>
                         
+                        <li><a href="/tags-output/programming class">programming class</a></li>
+                        
                         <li><a href="/tags-output/DevOps">DevOps</a></li>
+                        
+                        <li><a href="/tags-output/tutoring">tutoring</a></li>
                         
                         <li><a href="/tags-output/namespace">namespace</a></li>
                         

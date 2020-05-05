@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Let over map merge: Posts Tagged &quot;Behavioral Economics&quot;</title>
-    <link rel="canonical" href="https://humorless.github.io/tags-output/Behavioral Economics">
+    <title>Let over map merge: Teaching Clojure programming class</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/tutoring-class">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -51,17 +51,57 @@
         <div class="col-lg-9">
             <div id="content">
                 
-<div id="posts-by-tag">
-    <div id="page-header">
-        <h2>Posts Tagged &quot;Behavioral Economics&quot;</h2>
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">May 5, 2020</div>
+        
     </div>
-    <ul>
+    <h2>Teaching Clojure programming class</h2>
+</div>
+<div>
     
-        <li>
-            <a href="/posts-output/economics">Behavioral Economics and Clojure</a>
-        </li>
+    <p>When I told others that I am a Clojure programmer, they responded apathetically. Why so many people in Taiwan never heard of this great programming language? One day, an idea occurred to me that how about teaching some students? </p><h2 id="the&#95;advertisement">The advertisement</h2><p>I re-wrote my advertisement again and again. What kind of value proposition would be appreciated by my prospects? I actually did not know. At the end, I wrote 3 objectives in my <a href='https://medium.com/@replware/%E5%87%BD%E6%95%B8%E5%BC%8F%E7%A8%8B%E5%BC%8F%E8%A8%AD%E8%A8%88-functional-programming-%E5%BE%9E%E5%9F%BA%E7%A4%8E%E5%88%B0%E5%AF%A6%E5%8B%99-bc06f68c7bfb'>advertisement</a>. </p><ol><li>Help you learn the Clojure programming language</li><li>Help you become the real senior programmer in the eyes of your colleagues.</li><li>Help you become more confident whenever you want to ask for a raise.</li></ol><p>My friends did not believe I could get students, and they tried to tell the uncomfortable truth mildly. They asked something like "Who is your target audience?"</p><p>Fortunately, I got two students just after I posted it. Two of my college classmates wanted to learn Clojure programming language from me. </p><h2 id="the&#95;ways&#95;of&#95;teaching">The ways of teaching</h2><p>At the very beginning, I asked my students what they want to learn. This was a one-on-one tutoring class, so it could be customized. I organized the class into 4 stages.</p><ol><li><a href='https://github.com/humorless/dotfiles'>Development environment setup</a>.</li><li>About the Clojure's productivity &mdash; <a href='https://www.slideshare.net/humorless/the-productivity-brought-by-clojure-149170292'>The productivity brought by Clojure</a>.</li><li>Practicing at the <a href='http://www.4clojure.com/'>4clojure</a> website.</li><li>Studying any specific topics they were interested. (Customization part)</li></ol><h2 id="lessions&#95;learned&#95;from&#95;teaching">Lessions learned from teaching</h2><p>Through the questions from my students I found out some obstacles in learning Clojure. </p><h3 id="switching&#95;between&#95;purpose&#95;view&#95;and&#95;implementation&#95;view">Switching between purpose view and implementation view</h3><p>When I write recursion, I split it into three steps:</p><ol><li>Choose the name of this recursion function. The name is about this function's purpose.</li><li>Think about the boundary condition of this function. When will it stop?</li><li>Write the implementation of this function. This function should be implemented by a call to itself with a different input argument and some connection code.</li></ol><pre><code>&#40;defn range-to-zero &#91;x&#93; 
+  &#40;when &#40;&gt; x 0&#41;
+    &#40;conj &#40;range-to-zero &#40;dec x&#41;&#41; x&#41;&#41;&#41;
+</code></pre><p>Take the above code as an example. I think the output of <code>&#40;range-to-zero 4&#41;</code> is <code>'&#40;4 3 2 1&#41;</code>. When I want to define the <code>&#40;range-to-zero 5&#41;</code>, I just need to conj a <code>5</code> to the <code>'&#40;4 3 2 1&#41;</code>. </p><p>My students did not think like this way: they simulated the execution of the code from the very top toward the boundary conditions. They organized their mind like an interpreter and they traced the code just like the interpreter did. I told my student that you need to switch your thinking between purpose view and implementation view.</p><h3 id="different&#95;levels&#95;of&#95;complexity">Different levels of complexity</h3><p>After my students solved about 50 questions in 4clojure, they felt a sense of confidence to fly alone. However, when they just solved about 25 questions, they felt quite confused. They were very confused about the idiomatic ways to solve 4clojure questions. </p><p>I considered there were 5 levels of complexity:</p><ol><li>Solve the question by remembering the Clojure function name. For example, <code>frequencies</code>.</li><li>Solve the question by using some sequence questions: <code>map</code>, <code>filter</code>, <code>mapcat</code>.</li><li>Solve the question by using <code>reduce</code>.</li><li>Solve the question by using recursion.</li><li>Solve the question by using mutual recursion.</li></ol><p>I encouraged my students to solve any questions using as fewer level of complexity as possible. There were still certain special cases like <code>flatten</code>, which might not fit into my categories.</p><h2 id="final&#95;notes">Final notes</h2><p>One of my students told me that he decided to learn the Clojure programming language because of Robert C. Martin's recommendation. Thanks to uncle Bob that he had done great marketing for me.</p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
     
-    </ul>
+    <a href="/tags-output/experience">experience</a>
+    
+    <a href="/tags-output/programming class">programming class</a>
+    
+    <a href="/tags-output/tutoring">tutoring</a>
+    
+</div>
+
+
+    <div id="prev-next">
+        
+        
+        <a class="right" href="/posts-output/economics">Behavioral Economics and Clojure &raquo;</a>
+        
+    </div>
+
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://humorless.github.io/posts-output/tutoring-class";
+            this.page.identifier = "Teaching Clojure programming class";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//humorless.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    
+
+
 </div>
 
             </div>
