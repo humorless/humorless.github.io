@@ -12,11 +12,36 @@ https://humorless.github.io/
 This personal blog describes about the ideas around Clojure/ClojureScript/Datomic
 </description>
 <lastBuildDate>
-Tue, 05 May 2020 08:50:57 +0000
+Fri, 08 Jan 2021 10:32:11 +0000
 </lastBuildDate>
 <generator>
 clj-rss
 </generator>
+<item>
+<guid>
+https://humorless.github.io/posts-output/consulting-story
+</guid>
+<link>
+https://humorless.github.io/posts-output/consulting-story
+</link>
+<title>
+Software consulting made easy
+</title>
+<description>
+&lt;p&gt;If you are a Clojurian, you can not find a Clojure programming job in your own country and remote Clojure jobs are not on your time zone, this article is for you. My name is Laurence Chen. I started my one man &lt;a href='https://replware.dev/'&gt;software consulting business&lt;/a&gt; from 2019. &lt;/p&gt;&lt;h2 id=&quot;my&amp;#95;own&amp;#95;story&quot;&gt;My own story&lt;/h2&gt;&lt;p&gt;I worked for startup companies for most of my professional career, but never had a chance to use Clojure at my day job. In 2019, I got a chance to build customized software in a big corporate's sales department. I built my solution in Clojure/Datomic within 6 months. &lt;/p&gt;&lt;p&gt;After that success, I negotiated with my boss. I told her that I wish I could run my own software consulting business, and if she still needs me to maintain my software solution, I would be happy to get paid to do that.&lt;/p&gt;&lt;p&gt;My boss agreed, so I began my consulting business without quitting a job. My 2020 yearly income from consulting business was about 40% of my current job. I go to my &quot;corporate&quot; job one day every two weeks. &lt;/p&gt;&lt;h2 id=&quot;the&amp;#95;journey&quot;&gt;The journey&lt;/h2&gt;&lt;p&gt;To be honest, I thought I would not arrive at today's situation if I recklessly quitted my job and then started my consulting business. If you think the successful method in my story might apply to your case, please try to. Otherwise, you have better have certain savings before starting your own consulting business. Also, when I began my software consulting business, I read a book &amp;mdash; Million Dollar Consulting (written by Alan Weiss). 50% of the ideas of this article is borrowed from that book and then combined with my own experience. &lt;/p&gt;&lt;h3 id=&quot;the&amp;#95;ideal&amp;#95;clients&quot;&gt;The ideal clients&lt;/h3&gt;&lt;p&gt;There are three conditions of the ideal clients: &lt;/p&gt;&lt;ol&gt;&lt;li&gt;They need someone to build customized software solutions for them.&lt;/li&gt;&lt;li&gt;They have money.&lt;/li&gt;&lt;li&gt;They know little about software.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;The condition one and two need no extra discussion. The condition three came from my own experience. I found that my buyers are mostly the kind of people who know nothing about software. The potential buyers who understand software would deliberately choose others because they believe it would be easier to find another javascript contractor or python contractor.&lt;/p&gt;&lt;p&gt;The ideal clients may be sales department V.P. of a corporate or the CEO of a small or medium size business. A line manager of a corporate may be also good enough. However, an ideal client would never be HR people.&lt;/p&gt;&lt;h3 id=&quot;the&amp;#95;pricing&quot;&gt;The pricing&lt;/h3&gt;&lt;p&gt;I believe time-based pricing is not scalable. Also, in Taiwan, buyers do not accept time-based pricing. &lt;/p&gt;&lt;p&gt;I think ideal pricing model is value-based pricing: The idea is that I estimate how much value I will create for my buyer and then I charge the price of the 1/10 of that value. Therefore, my buyer would think this is a ROI 10 investment. &lt;/p&gt;&lt;p&gt;Currently, my fixed-pricing formula is something like: &lt;/p&gt;&lt;pre&gt;&lt;code&gt;Project complexity = Code complextiy &amp;#42; Data complexity + Art complexity
+
+Art complexity = numbers of page &amp;#42; 4.0
+Data complexity = average&amp;#40;3.0 &amp;#42; number of tables, 0.8 &amp;#42; number of columns&amp;#41;
+Code complexity = backend &amp;#40;4&amp;#41; + user UI &amp;#40;1&amp;#41; + admin UI &amp;#40;1&amp;#41; 
+Web UI = 1
+Chat Bot UI = 1.5
+Mobile App UI = 3 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;My price would be directly proportional to the project complexity.&lt;/p&gt;&lt;h3 id=&quot;the&amp;#95;marketing&amp;#95;plan&amp;#95;and&amp;#95;discipline&quot;&gt;The marketing plan and discipline&lt;/h3&gt;&lt;p&gt;There are two important directions in a &lt;strong&gt;marketing plan&lt;/strong&gt;: &lt;/p&gt;&lt;ol&gt;&lt;li&gt;How to reach out to buyers: referral, speaking, or networking&lt;/li&gt;&lt;li&gt;How to let your buyers find you: blog, publishing, customer testimonial, etc.&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;The &lt;strong&gt;marketing discipline&lt;/strong&gt; is something like this:&lt;/p&gt;&lt;p&gt;If you can meet two potential buyers a week, you will meet 100 buyers a year. A reasonable successful sale rate would be about 20%. Therefore, you may get 20 sales a year. If the average sale is X dollars, you will earn&lt;code&gt;20 &amp;#42; X&lt;/code&gt; dollars a year. &lt;/p&gt;&lt;h2 id=&quot;final&amp;#95;notes&quot;&gt;Final notes&lt;/h2&gt;&lt;p&gt;I learned so much from the Clojure community and I got so much help from this community. If you think that I may help you, &lt;a href='mailto:humorless@gmail.com'&gt;contact with me&lt;/a&gt;. &lt;/p&gt;
+</description>
+<pubDate>
+Fri, 08 Jan 2021 00:00:00 +0000
+</pubDate>
+</item>
 <item>
 <guid>
 https://humorless.github.io/posts-output/tutoring-class
