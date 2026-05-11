@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Let over map merge: Software consulting made easy</title>
-    <link rel="canonical" href="https://humorless.github.io/posts-output/consulting-story">
+    <title>Let over map merge: Agent-Ready Stack</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/agent-ready-stack">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
           type="text/css">
@@ -54,30 +54,24 @@
 <div id="post">
     <div class="post-header">
     <div id="post-meta" class="row">
-        <div class="col-lg-6">January 8, 2021</div>
+        <div class="col-lg-6">May 11, 2026</div>
         
     </div>
-    <h2>Software consulting made easy</h2>
+    <h2>Agent-Ready Stack</h2>
 </div>
 <div>
     
-    <p>If you are a Clojurian, you can not find a Clojure programming job in your own country and remote Clojure jobs are not on your time zone, this article is for you. My name is Laurence Chen. I started my one man <a href='https://replware.dev/'>software consulting business</a> from 2019. </p><h2 id="my&#95;own&#95;story">My own story</h2><p>I worked for startup companies for most of my professional career, but never had a chance to use Clojure at my day job. In 2019, I got a chance to build customized software in a big corporate's sales department. I built my solution in Clojure/Datomic within 6 months. </p><p>After that success, I negotiated with my boss. I told her that I wish I could run my own software consulting business, and if she still needs me to maintain my software solution, I would be happy to get paid to do that.</p><p>My boss agreed, so I began my consulting business without quitting a job. My 2020 yearly income from consulting business was about 40% of my current job. I go to my "corporate" job one day every two weeks. </p><h2 id="the&#95;journey">The journey</h2><p>To be honest, I thought I would not arrive at today's situation if I recklessly quitted my job and then started my consulting business. If you think the successful method in my story might apply to your case, please try to. Otherwise, you have better have certain savings before starting your own consulting business. Also, when I began my software consulting business, I read a book &mdash; Million Dollar Consulting (written by Alan Weiss). 50% of the ideas of this article is borrowed from that book and then combined with my own experience. </p><h3 id="the&#95;ideal&#95;clients">The ideal clients</h3><p>There are three conditions of the ideal clients: </p><ol><li>They need someone to build customized software solutions for them.</li><li>They have money.</li><li>They know little about software.</li></ol><p>The condition one and two need no extra discussion. The condition three came from my own experience. I found that my buyers are mostly the kind of people who know nothing about software. The potential buyers who understand software would deliberately choose others because they believe it would be easier to find another javascript contractor or python contractor.</p><p>The ideal clients may be sales department V.P. of a corporate or the CEO of a small or medium size business. A line manager of a corporate may be also good enough. However, an ideal client would never be HR people.</p><h3 id="the&#95;pricing">The pricing</h3><p>I believe time-based pricing is not scalable. Also, in Taiwan, buyers do not accept time-based pricing. </p><p>I think ideal pricing model is value-based pricing: The idea is that I estimate how much value I will create for my buyer and then I charge the price of the 1/10 of that value. Therefore, my buyer would think this is a ROI 10 investment. </p><p>Currently, my fixed-pricing formula is something like: </p><pre><code>Project complexity = Code complextiy &#42; Data complexity + Art complexity
-
-Art complexity = numbers of page &#42; 4.0
-Data complexity = average&#40;3.0 &#42; number of tables, 0.8 &#42; number of columns&#41;
-Code complexity = backend &#40;4&#41; + user UI &#40;1&#41; + admin UI &#40;1&#41; 
-Web UI = 1
-Chat Bot UI = 1.5
-Mobile App UI = 3 
-</code></pre><p>My price would be directly proportional to the project complexity.</p><h3 id="the&#95;marketing&#95;plan&#95;and&#95;discipline">The marketing plan and discipline</h3><p>There are two important directions in a <strong>marketing plan</strong>: </p><ol><li>How to reach out to buyers: referral, speaking, or networking</li><li>How to let your buyers find you: blog, publishing, customer testimonial, etc.</li></ol><p>The <strong>marketing discipline</strong> is something like this:</p><p>If you can meet two potential buyers a week, you will meet 100 buyers a year. A reasonable successful sale rate would be about 20%. Therefore, you may get 20 sales a year. If the average sale is X dollars, you will earn<code>20 &#42; X</code> dollars a year. </p><h2 id="final&#95;notes">Final notes</h2><p>I learned so much from the Clojure community and I got so much help from this community. If you think that I may help you, <a href='mailto:humorless@gmail.com'>contact with me</a>. </p>
+    <p>I keep seeing people share vibe-coded apps built on TypeScript/React + Supabase — seemingly the default recommendation from Lovable or Cursor. As a Clojure programmer, I can't stay quiet about this. In an era where AI agents are deeply embedded in the development workflow, that choice carries structural hidden costs that almost nobody is talking about.</p><h2 id="context&#95;window&#95;is&#95;the&#95;bottleneck,&#95;and&#95;framework&#95;design&#95;determines&#95;burn&#95;rate">Context Window Is the Bottleneck, and Framework Design Determines Burn Rate</h2><p>LongCodeBench research shows that Claude 3.5 Sonnet's accuracy on bug-fixing tasks drops from 29% to 3% as context grows from 32K to 256K tokens. Chroma tested 18 frontier models and found the same pattern across all of them.</p><p>Coding agents accelerate this degradation: every tool call, every file read, every error message accumulates in the context. A 30-step agent session can consume more than ten times the context of a single conversation turn.</p><p>Countless efforts are already underway to manage context from the harness-design side — but the tech stack itself has an enormous impact on context efficiency that rarely gets discussed.</p><h2 id="task-relevant&#95;subgraph">Task-Relevant Subgraph</h2><p>An AI agent completing a task doesn't need to read the entire codebase — only the files relevant to that task. Call this set the task-relevant subgraph. <strong>The size of the subgraph is determined by the architectural design of the framework, not by the model.</strong></p><p>The problem with TypeScript + React + Supabase is that a single feature naturally spans multiple layers — component, hook, state, API client, type definition — each living in a different file. The subgraph starts large and only grows as shared dependencies accumulate.</p><p>AI tends to recommend the stack it was trained on the most, but "easy to generate" is not the same as "efficient for long-term AI-assisted development." These are two different things.</p><h2 id="what&#95;makes&#95;a&#95;stack&#95;more&#95;agent-ready">What Makes a Stack More Agent-Ready</h2><p>My current go-to is <a href='https://stack.bogoyavlensky.com/'>Clojure Stack Lite</a>, and several of its design choices structurally shrink the task-relevant subgraph.</p><p><strong>HTMX eliminates implicit client state.</strong> React state is scattered across multiple interdependent files; to verify behavior, an agent has to simulate browser interactions. HTMX is driven by server responses, so an agent can verify with a plain <code>curl</code> — the response is an HTML fragment, right or wrong, no ambiguity.</p><p><strong>HoneySQL eliminates implicit lazy loading.</strong> When an ORM produces an N+1 problem, the debug subgraph includes model definitions, association configs, and migration files, because the issue is buried in implicit behavior. HoneySQL expresses queries as SQL-as-data — no lazy loading, no association magic. N+1 can't happen silently, because the syntax simply doesn't allow it to sneak in. The debug subgraph shrinks from five files to one.</p><p><strong>Blocking IO eliminates implicit error paths.</strong> The fundamental problem with async isn't the syntax — it's that error paths are implicit. Every async call site is a potential break point where an exception can detach from the main flow. To locate a root cause, an agent must trace the entire call chain, and context width grows linearly with chain length. Clojure's blocking IO has no async boundaries; exceptions follow a single path — propagate upward, handled uniformly in middleware. When debugging, an agent only needs two places: the middleware log and the call site the log points to. Context scope stays fixed regardless of system size.</p><h2 id="explicit&#95;over&#95;implicit&#95;is&#95;not&#95;just&#95;a&#95;clojure&#95;virtue">Explicit Over Implicit Is Not Just a Clojure Virtue</h2><p>All three points share a common structure: <strong>the less implicit behavior, the smaller the context an agent needs to bring in.</strong></p><p>The point here isn't a framework or language comparison — it's an observation about design philosophy. Explicit over implicit is a virtue for human developers; for AI agents, it's a structural guarantee that they won't go dumb prematurely.</p><p>Design principles the Clojure community has championed for years happen to be a competitive advantage in the AI agent era. I've chosen to frame this in terms of context efficiency, hoping it helps more people appreciate what the Clojure community figured out a long time ago.</p>
 </div>
 
 <div id="post-tags">
     <b>Tags: </b>
     
-    <a href="/tags-output/experience">experience</a>
+    <a href="/tags-output/coding agent">coding agent</a>
     
-    <a href="/tags-output/consulting business">consulting business</a>
+    <a href="/tags-output/context efficiency">context efficiency</a>
+    
+    <a href="/tags-output/subgraph">subgraph</a>
     
 </div>
 
@@ -93,8 +87,8 @@ Mobile App UI = 3
     <div id="disqus_thread"></div>
     <script type="text/javascript">
         var disqus_config = function () {
-            this.page.url = "https://humorless.github.io/posts-output/consulting-story";
-            this.page.identifier = "Software consulting made easy";
+            this.page.url = "https://humorless.github.io/posts-output/agent-ready-stack";
+            this.page.identifier = "Agent-Ready Stack";
         };
         (function() {
             var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
@@ -115,7 +109,7 @@ Mobile App UI = 3
                 <h3>Links</h3>
                 <ul id="links">
                     <li><a href="https://replware.dev">REPLWARE</a></li>
-                    <li><a href="https://medium.com/@replware">REPLWARE blog (Chinese)</a></li>
+                    <li><a href="https://replware.substack.com/">REPLWARE blog (Chinese)</a></li>
                     
                 </ul>
                 
@@ -123,15 +117,15 @@ Mobile App UI = 3
                     <h3>Recent Posts</h3>
                     <ul>
                         
-                        <li><a href="/posts-output/consulting-story">Software consulting made easy</a></li>
+                        <li><a href="/posts-output/agent-ready-stack">Agent-Ready Stack</a></li>
                         
                         <li><a href="/posts-output/tutoring-class">Teaching Clojure programming class</a></li>
-                        
-                        <li><a href="/posts-output/economics">Behavioral Economics and Clojure</a></li>
                         
                         <li><a href="/posts-output/datomic-cache">Using Datomic with disk cache and LU cache</a></li>
                         
                         <li><a href="/posts-output/etl">A Clojurian&#39;s idioms and patterns for ETL</a></li>
+                        
+                        <li><a href="/posts-output/first-consulting">Lessons learned from the software consulting job</a></li>
                         
                     </ul>
                 </div>
@@ -149,21 +143,21 @@ Mobile App UI = 3
                         
                         <li><a href="/tags-output/consulting">consulting</a></li>
                         
-                        <li><a href="/tags-output/Behavioral Economics">Behavioral Economics</a></li>
-                        
                         <li><a href="/tags-output/experience">experience</a></li>
                         
                         <li><a href="/tags-output/ansible">ansible</a></li>
                         
                         <li><a href="/tags-output/groupby">groupby</a></li>
                         
+                        <li><a href="/tags-output/coding agent">coding agent</a></li>
+                        
                         <li><a href="/tags-output/let over map merge">let over map merge</a></li>
                         
                         <li><a href="/tags-output/ETL">ETL</a></li>
                         
-                        <li><a href="/tags-output/business">business</a></li>
-                        
                         <li><a href="/tags-output/unit test">unit test</a></li>
+                        
+                        <li><a href="/tags-output/context efficiency">context efficiency</a></li>
                         
                         <li><a href="/tags-output/assembly">assembly</a></li>
                         
@@ -176,8 +170,6 @@ Mobile App UI = 3
                         <li><a href="/tags-output/dependency-injection">dependency-injection</a></li>
                         
                         <li><a href="/tags-output/vim-fireplace">vim-fireplace</a></li>
-                        
-                        <li><a href="/tags-output/consulting business">consulting business</a></li>
                         
                         <li><a href="/tags-output/pattern">pattern</a></li>
                         
@@ -195,6 +187,8 @@ Mobile App UI = 3
                         
                         <li><a href="/tags-output/golang">golang</a></li>
                         
+                        <li><a href="/tags-output/subgraph">subgraph</a></li>
+                        
                         <li><a href="/tags-output/Datomic">Datomic</a></li>
                         
                     </ul>
@@ -203,7 +197,7 @@ Mobile App UI = 3
             </div>
         </div>
     </div>
-    <footer>Copyright &copy; 2021 Laurence Chen
+    <footer>Copyright &copy; 2026 Laurence Chen
         <p style="text-align: center;">Powered by <a href="http://cryogenweb.org">Cryogen</a></p></footer>
 </div>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
