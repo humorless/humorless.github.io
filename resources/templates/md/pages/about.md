@@ -4,18 +4,15 @@
  :navbar? true}
 
 
-My name is **Laurence Chen**. I am a software developer living in Taipei, Taiwan. My primary technical stacks are Clojure/ClojureScript/Datomic.
-
-### Slides
-* [SlideShare](https://www.slideshare.net/humorless)
+My name is **Laurence Chen**. I am a software developer living in Taipei, Taiwan. I focus on helping companies implement the Modern Data Stack. As for application programming, I use Clojure/ClojureScript/Datomic. 
 
 ### Contact
 
 * [Github](https://github.com/humorless)
-* [Twitter](https://twitter.com/humorless)
-* [LinkedIn](https://linkedin.com/in/humorless)
+* [Mastodon](https://g0v.social/@replware)
+* [LinkedIn](https://linkedin.com/in/replware)
 
 ### Consulting
 
-I'm available for contracting and consulting work on Clojure/ClojureScript/Datomic, either on-site in Taipei or remote. Check [replware](https://replware.dev/) for more information.
+I'm available for contracting and consulting work on Modern Data Stack or Clojure/ClojureScript/Datomic, either on-site in Taipei or remote. Check [replware](https://replware.dev/) for more information.
 
