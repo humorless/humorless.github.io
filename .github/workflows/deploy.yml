@@ -19,6 +19,13 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      - name: Set up Leiningen
+        run: |
+          curl -o lein https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein
+          chmod +x lein
+          sudo mv lein /usr/local/bin/
+          lein --version
+
       - name: Build static site with Cryogen
         run: lein run
 
