@@ -1,0 +1,31 @@
+name: Build and Deploy to gh-pages
+
+on:
+  push:
+    branches:
+      - code
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code branch
+        uses: actions/checkout@v3
+
+      - name: Set up Java environment
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+
+      - name: Build static site with Cryogen
+        run: lein run
+
+      - name: Deploy to gh-pages
+        uses: github-pages-deploy-action@v4.5.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          folder: resources/public
+          single-commit: false
