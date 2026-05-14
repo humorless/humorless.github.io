@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Let over map merge: Expert Clojure Workflows for AI Agents: Four Skills from Production Experience</title>
+    <link rel="canonical" href="https://humorless.github.io/posts-output/agent-skill">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Alegreya:400italic,700italic,400,700" rel="stylesheet"
+          type="text/css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+    <link href="/css/screen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Let over map merge</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li ><a href="/">Home</a></li>
+                <li
+                ><a href="/archives">Archives</a></li>
+                
+                <li
+                >
+                <a href="/pages-output/about">About</a>
+                </li>
+                
+                <li><a href="/feed.xml">RSS</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div><!--/.container-fluid -->
+</nav>
+
+
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-lg-9">
+            <div id="content">
+                
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <div class="col-lg-6">May 14, 2026</div>
+        
+    </div>
+    <h2>Expert Clojure Workflows for AI Agents: Four Skills from Production Experience</h2>
+</div>
+<div>
+    
+    <p>When you let an AI agent write Clojure code, you expect it to leverage the language's superpowers—the REPL's interactivity, structural editing, format-preserving code manipulation, and the rich ecosystem of wrapper libraries. Instead, what you typically see is mediocre code written slowly, as the agent makes the same mistakes every developer learns to avoid.</p><p>I discovered this the hard way.</p><h2 id="the&#95;setup:&#95;vibe&#95;coding&#95;with&#95;observations">The Setup: Vibe Coding with Observations</h2><p>While building <a href='https://github.com/humorless/lite-crm'>lite-crm</a> with Claude Code, I deliberately avoided the <code>&ndash;dangerously-skip-permissions</code> flag. Instead, I sat beside the agent and watched it work—observing its patterns, frustrations, and failures. What I saw was an agent trained on millions of codebases but ignorant of how Clojure practitioners actually think.</p><p>Three concrete problems emerged:</p><h3 id="problem&#95;1:&#95;the&#95;wrapper&#95;library&#95;blind&#95;spot">Problem 1: The Wrapper Library Blind Spot</h3><p>When encountering Java interop, the agent jumps straight into direct interoperability without ever asking: "Is there a Clojure wrapper library for this?"</p><p><strong>The result:</strong> Uglier code, harder to maintain, and a missed opportunity for idiomatic Clojure.</p><h3 id="problem&#95;2:&#95;formatting&#95;brittleness">Problem 2: Formatting Brittleness</h3><p>Code formatters like <code>cljfmt</code> are essential—but they create a sneaky problem. When the agent modifies source and the formatter shifts indentation by a single space, the agent's subsequent <code>str&#95;replace</code> operations fail due to whitespace mismatch.</p><p><strong>The result:</strong> I watched it fail, retry, fail again, then give up and rewrite entire files. Enormous token waste.</p><h3 id="problem&#95;3:&#95;primitive&#95;debugging">Problem 3: Primitive Debugging</h3><p>When a test failed, the agent fell back on the crudest debugging technique: add <code>println</code> statements, run the test, inspect output, delete the logs, restore the code. Repeat.</p><p>This is especially wasteful in a Clojure project where I've provided direct access to the REPL via the <a href='https://github.com/licht1stein/brepl'>brepl</a> CLI. The agent could inspect values interactively, test hypotheses instantly, and trace execution without touching source code. But it never did.<h2></h2></p><h2 id="the&#95;recognition">The Recognition</h2><p>These weren't knowledge gaps. They were <strong>behavioral gaps</strong>—places where the agent's default approach conflicted with Clojure expertise.</p><p>In the context of Clojure Stack Lite (which includes proper testing harness and real database, not mocks), the agent wasn't just writing suboptimal code—it was making design decisions based on unfamiliar tools.</p><p>I decided to address this not by teaching the agent more facts, but by redirecting its behavior.<h2></h2></p><h2 id="four&#95;skills&#95;to&#95;close&#95;the&#95;gap">Four Skills to Close the Gap</h2><p>The result is four skills, each targeting a specific behavioral pattern that distinguishes novice agents from expert Clojure practitioners:</p><h3 id="1.&#95;<strong>clj-debug</strong>:&#95;from&#95;logging&#95;to&#95;repl&#95;inspection">1. <strong>clj-debug</strong>: From Logging to REPL Inspection</h3><p><strong>The Problem:</strong> Agents default to adding <code>println</code>, <code>tap&gt;</code>, or logging statements, then running tests to inspect output.</p><p><strong>The Pattern:</strong> In Clojure, this is backwards. The REPL lets you pin a value with <code>def</code>, explore its structure instantly, test hypotheses interactively—all without modifying code.</p><p><strong>What the skill does:</strong> When you're about to debug, clj-debug redirects from logging patterns to REPL-based inline inspection. It teaches the agent to use <code>def</code>, <code>keys</code>, keyword access, and structural exploration—the actual workflow expert Clojure developers follow.</p><p><strong>Behavioral change:</strong> From edit-test-inspect cycle to interactive REPL inspection. This is faster, non-invasive, and gives immediate feedback.</p><h3 id="2.&#95;<strong>clj-discover</strong>:&#95;systematic&#95;api&#95;exploration">2. <strong>clj-discover</strong>: Systematic API Exploration</h3><p><strong>The Problem:</strong> When encountering unfamiliar Java classes or macros, agents jump to direct integration without exploring whether an idiomatic Clojure wrapper already exists.</p><p><strong>The Pattern:</strong> Expert Clojure developers follow a deliberate workflow:</p><ol><li>Search for a Clojure wrapper library first (usually there is one)</li><li>If not, inspect the Java class via reflection</li><li>For macros, expand them to understand what code they generate</li></ol><p><strong>What the skill does:</strong> clj-discover codifies this workflow, ensuring the agent prioritizes idiomatic libraries and systematic exploration before writing integration code.</p><p><strong>Behavioral change:</strong> From direct interop to research-first integration. The result is cleaner, more maintainable code.</p><h3 id="3.&#95;<strong>clj-replace</strong>:&#95;format-aware&#95;structural&#95;replacement">3. <strong>clj-replace</strong>: Format-Aware Structural Replacement</h3><p><strong>The Problem:</strong> Code formatters shift indentation by spaces, breaking text-based <code>str&#95;replace</code>. The agent then wastes tokens failing repeatedly or rewriting entire files.</p><p><strong>The Pattern:</strong> Clojure is homoiconic—code is data. Two S-expressions are semantically equivalent even if formatted differently. Expert editors handle this automatically via structural editing.</p><p><strong>What the skill does:</strong> clj-replace compares code by structure (S-expression equivalence) rather than text, ignoring whitespace while preserving the original file's formatting style. It uses the <a href='https://cljdoc.org/d/rewrite-clj/rewrite-clj/1.1.45/doc/user-guide'>rewrite-clj</a> library to parse, match, and replace nodes safely.</p><p><strong>Behavioral change:</strong> From brittle text matching to robust structural matching. Formatting variations become irrelevant.</p><h3 id="4.&#95;<strong>clj-refactor</strong>:&#95;mechanism/policy&#95;separation">4. <strong>clj-refactor</strong>: Mechanism/Policy Separation</h3><p><strong>The Problem:</strong> Without guidance, agents write tangled code where reusable mechanisms are mixed with business policy, creating inflexible designs that accumulate technical debt.</p><p><strong>The Pattern:</strong> Arne Brasseur's <a href='https://lambdaisland.com/blog/2022-03-10-mechanism-vs-policy'>mechanism/policy separation</a> principle is core to building maintainable Clojure systems. Mechanism is context-free, stable, and reusable. Policy is opinionated, domain-specific, and volatile. Expert developers keep these separate.</p><p><strong>What the skill does:</strong> clj-refactor scans code for opportunities to extract mechanisms from policy—functions where hard-coded values or implicit context can be made explicit, dependencies can be pushed to parameters, and reusable logic can be isolated.</p><p><strong>Behavioral change:</strong> From monolithic functions to extracted, composable mechanisms. Code becomes easier to test, reuse, and reason about.</p><p><strong>Note:</strong> Unlike clj-debug, clj-discover, and clj-replace—which activate automatically when the agent encounters problems—clj-refactor is <strong>user-initiated</strong>. You invoke it when you want the agent to analyze code for refactoring opportunities, not in response to a failure.<h2></h2></p><h2 id="why&#95;this&#95;matters">Why This Matters</h2><p>These aren't reference manuals or API documentation. They're <strong>workflow redirects</strong>—rules that teach AI agents to think like expert Clojure developers instead of generic code writers.</p><p>The underlying philosophy is simple: <strong>A skill's value is measured by behavioral change, not knowledge transfer.</strong></p><p>When an agent uses clj-debug, it stops adding logging. When it uses clj-discover, it checks for idiomatic wrappers before raw interop. When it uses clj-replace, formatting becomes irrelevant. When you invoke clj-refactor, the agent identifies tangled mechanisms and suggests extraction. Each skill shifts the agent's default patterns closer to expert practice.</p><p>This matters because Clojure is a language of leverage. The REPL, immutability, homoiconicity, and the functional approach all reward practitioners who use them correctly. An agent that doesn't leverage these features isn't just writing slow code—it's missing the point of the language.<h2></h2></p><p>The goal is simple: your AI agent shouldn't just write Clojure code—it should think like a Clojure developer. These four skills make that possible.</p><p>Find them at: <a href='https://github.com/humorless/clj-native-agent/'>github.com/humorless/clj-native-agent</a></p>
+</div>
+
+<div id="post-tags">
+    <b>Tags: </b>
+    
+    <a href="/tags-output/skills">skills</a>
+    
+    <a href="/tags-output/clojure">clojure</a>
+    
+    <a href="/tags-output/ai-agents">ai-agents</a>
+    
+    <a href="/tags-output/behavioral-change">behavioral-change</a>
+    
+</div>
+
+
+    <div id="prev-next">
+        
+        
+        <a class="right" href="/posts-output/agent-ready-stack">Agent-Ready Stack &raquo;</a>
+        
+    </div>
+
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        var disqus_config = function () {
+            this.page.url = "https://humorless.github.io/posts-output/agent-skill";
+            this.page.identifier = "Expert Clojure Workflows for AI Agents: Four Skills from Production Experience";
+        };
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//humorless.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    
+
+
+</div>
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div id="sidebar">
+                <h3>Links</h3>
+                <ul id="links">
+                    <li><a href="https://replware.dev">REPLWARE</a></li>
+                    <li><a href="https://replware.substack.com/">REPLWARE blog (Chinese)</a></li>
+                    
+                </ul>
+                
+                <div id="recent">
+                    <h3>Recent Posts</h3>
+                    <ul>
+                        
+                        <li><a href="/posts-output/agent-skill">Expert Clojure Workflows for AI Agents: Four Skills from Production Experience</a></li>
+                        
+                        <li><a href="/posts-output/agent-ready-stack">Agent-Ready Stack</a></li>
+                        
+                        <li><a href="/posts-output/tutoring-class">Teaching Clojure programming class</a></li>
+                        
+                        <li><a href="/posts-output/datomic-cache">Using Datomic with disk cache and LU cache</a></li>
+                        
+                        <li><a href="/posts-output/etl">A Clojurian&#39;s idioms and patterns for ETL</a></li>
+                        
+                    </ul>
+                </div>
+                
+                
+                <div id="tags">
+                    <h3>Tags</h3>
+                    <ul>
+                        
+                        <li><a href="/tags-output/idiom">idiom</a></li>
+                        
+                        <li><a href="/tags-output/tips">tips</a></li>
+                        
+                        <li><a href="/tags-output/Luminus">Luminus</a></li>
+                        
+                        <li><a href="/tags-output/skills">skills</a></li>
+                        
+                        <li><a href="/tags-output/consulting">consulting</a></li>
+                        
+                        <li><a href="/tags-output/clojure">clojure</a></li>
+                        
+                        <li><a href="/tags-output/experience">experience</a></li>
+                        
+                        <li><a href="/tags-output/ansible">ansible</a></li>
+                        
+                        <li><a href="/tags-output/groupby">groupby</a></li>
+                        
+                        <li><a href="/tags-output/coding agent">coding agent</a></li>
+                        
+                        <li><a href="/tags-output/let over map merge">let over map merge</a></li>
+                        
+                        <li><a href="/tags-output/ETL">ETL</a></li>
+                        
+                        <li><a href="/tags-output/ai-agents">ai-agents</a></li>
+                        
+                        <li><a href="/tags-output/unit test">unit test</a></li>
+                        
+                        <li><a href="/tags-output/context efficiency">context efficiency</a></li>
+                        
+                        <li><a href="/tags-output/assembly">assembly</a></li>
+                        
+                        <li><a href="/tags-output/database">database</a></li>
+                        
+                        <li><a href="/tags-output/repl">repl</a></li>
+                        
+                        <li><a href="/tags-output/Excel">Excel</a></li>
+                        
+                        <li><a href="/tags-output/dependency-injection">dependency-injection</a></li>
+                        
+                        <li><a href="/tags-output/vim-fireplace">vim-fireplace</a></li>
+                        
+                        <li><a href="/tags-output/pattern">pattern</a></li>
+                        
+                        <li><a href="/tags-output/vagrant">vagrant</a></li>
+                        
+                        <li><a href="/tags-output/programming class">programming class</a></li>
+                        
+                        <li><a href="/tags-output/DevOps">DevOps</a></li>
+                        
+                        <li><a href="/tags-output/tutoring">tutoring</a></li>
+                        
+                        <li><a href="/tags-output/namespace">namespace</a></li>
+                        
+                        <li><a href="/tags-output/behavioral-change">behavioral-change</a></li>
+                        
+                        <li><a href="/tags-output/performance">performance</a></li>
+                        
+                        <li><a href="/tags-output/golang">golang</a></li>
+                        
+                        <li><a href="/tags-output/subgraph">subgraph</a></li>
+                        
+                        <li><a href="/tags-output/Datomic">Datomic</a></li>
+                        
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <footer>Copyright &copy; 2026 Laurence Chen
+        <p style="text-align: center;">Powered by <a href="http://cryogenweb.org">Cryogen</a></p></footer>
+</div>
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="/js/highlight.pack.js" type="text/javascript"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-135441027-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-135441027-1');
+</script>
+
+
+</body>
+</html>
